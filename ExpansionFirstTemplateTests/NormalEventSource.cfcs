@@ -1,0 +1,11 @@
+﻿namespace ConsoleRunT4Example
+{
+    [SemanticLog()]
+    public class Normal
+    {
+        public void Message(string Message) { }
+        [Event(2)]
+        public void AccessByPrimaryKey(int PrimaryKey) { }
+    }
+
+}
