@@ -8,6 +8,7 @@ using System.Linq;
 using RoslynDom.CSharp;
 using RoslynDom.Common;
 using CodeFirstMetadataTest.PropertyChanged;
+using System.IO;
 
 namespace ExpansionFirstTemplateTests
 {
@@ -101,8 +102,22 @@ namespace _xf_class_namespaceName
       }
 
       [TestMethod]
+      public void Can_load_NotifyPropertyChanged_metadata()
+      {
+         var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
+         CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);
+         Assert.IsNotNull(metadata);
+      }
+
+
+      [TestMethod]
       public void Can_get_NotifyPropertyChanged_output()
       {
+         var csharpCode = File.ReadAllText(@"..\..\NotifyPropertyChanged.cs");
+         var root = RDom.CSharp.Load(csharpCode);
+         var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
+         //Assert.AreEqual(csharpCode, verify);
+
          var xfTemplate = ExpansionFirstTemplate.LoadFromFile(@"..\..\NotifyPropertyChanged.cs");
          var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
          CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);

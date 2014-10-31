@@ -42,11 +42,11 @@ namespace ExpansionFirstTemplates
          contextStack.Add(Constants.IsInOutsideTemplateRunner, true);
          contextStack.Add(Constants.ExpansionFirstRunner, this);
          IDom nextPart = null;
-         return InternalRun(templateRoot, contextStack, ref nextPart).Cast<IRoot>();
+         return Update(templateRoot, contextStack, ref nextPart).Cast<IRoot>();
          // don't bother popping the metadata stack, because we're done and at the top
       }
 
-      public IEnumerable<IDom> InternalRun(IDom part, MetadataContextStack contextStack, ref IDom lastPart)
+      internal IEnumerable<IDom> Update(IDom part, MetadataContextStack contextStack, ref IDom lastPart)
       {
          var newMemberList = new List<IDom>();
 
@@ -55,23 +55,53 @@ namespace ExpansionFirstTemplates
          var method = part.GetType().GetMethod("Copy");
          var newItem = method.Invoke(part, null) as IDom;
          DoReplacements(newItem, contextStack);
+         HandleAttributes(newItem as IHasAttributes , contextStack);
 
-         var newPartAsContainer = newItem as IContainer;
-         if (newPartAsContainer != null)
+         UpdateProperty(contextStack, newItem as IProperty );
+         UpdateContainer(contextStack, newMemberList, newItem as IContainer);
+
+         return new IDom[] { newItem };
+      }
+
+      private void HandleAttributes(IHasAttributes  newItemHasAttributes, MetadataContextStack contextStack)
+      {
+         if (newItemHasAttributes == null) return;
+         var attributes = newItemHasAttributes.Attributes;
+         var xfAttributes = attributes.Where(x => x.Name.StartsWith("_xf_.")).ToList();
+         foreach (var attribute in xfAttributes)
          {
-            var member = newPartAsContainer.GetMembers().FirstOrDefault();
+            var name = attribute.Name.SubstringAfter("_xf_.");
+         }
+      }
+
+      private void UpdateContainer(MetadataContextStack contextStack, List<IDom> newMemberList, IContainer newContainer)
+      {
+         if (newContainer != null)
+         {
+            var member = newContainer.GetMembers().FirstOrDefault();
             var i = 0;
             while (member != null)
             {
                i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
                var lastMember = member;
-               newMemberList.AddRange(InternalRun(member, contextStack, ref lastMember));
+               newMemberList.AddRange(Update(member, contextStack, ref lastMember));
                var nextMember = lastMember.NextSibling();
                member = nextMember;
             }
-            UpdateItem(newPartAsContainer, newMemberList);
+            UpdateItem(newContainer, newMemberList);
          }
-         return new IDom[] { newItem };
+      }
+
+      private void UpdateProperty(MetadataContextStack contextStack, IProperty newProperty)
+      {
+         if (newProperty != null)
+         {
+            // yes, ugly hack
+            IDom dummy = null;
+            var getAccessor = Update(newProperty.GetAccessor, contextStack, ref dummy);
+            newProperty.GetAccessor = getAccessor.First() as IAccessor;
+            newProperty.SetAccessor = Update(newProperty.SetAccessor, contextStack, ref dummy).First() as IAccessor;
+         }
       }
 
       private void UpdateItem(IContainer newPartAsContainer, List<IDom> ret)

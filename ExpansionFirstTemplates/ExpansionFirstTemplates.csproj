@@ -112,7 +112,6 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IKnownDirective.cs" />
     <Compile Include="ReplacementAlteration.cs" />
-    <Compile Include="SetVariableDirective.cs" />
     <Compile Include="CopyForEachDirective.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ForEachInstruction.cs" />

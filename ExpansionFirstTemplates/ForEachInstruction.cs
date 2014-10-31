@@ -30,8 +30,7 @@ namespace ExpansionFirstTemplates
                    List<IDom> retList,
                    ref IDom lastPart)
       {
-         var ret = new List<IDom>();
-         if (DoInstructionInternal(part as IDetailBlockStart, contextStack, ret, ref lastPart)) return true;
+         if (DoInstructionInternal(part as IDetailBlockStart, contextStack, retList, ref lastPart)) return true;
          return false;
       }
 
@@ -55,12 +54,12 @@ namespace ExpansionFirstTemplates
             contextStack.Push(varName, item);
             var member = blockContents.FirstOrDefault();
             var i = 0;
-            while (member != null)
+            while (member != null && blockContents.Contains(member))
             {
                i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
                var lastMember = member;
-               var newMembers = expansionFirstRunner.InternalRun(member, contextStack, ref lastMember);
-               var nextMember = lastMember.NextSibling();
+               var copiedMember = member.GetType().GetMethod("Copy").Invoke(member, null) as IDom;
+               var newMembers = expansionFirstRunner.Update(copiedMember, contextStack, ref lastMember);
                // don't store the end region that matches this block start, because it's being removed
                newMembers = newMembers
                               .Where(x =>
@@ -70,11 +69,11 @@ namespace ExpansionFirstTemplates
                                  return (block.GroupGuid != blockStart.GroupGuid);
                               });
                newList.AddRange(newMembers);
-               member = nextMember;
+               member = lastMember.NextSibling();
             }
             contextStack.Pop();
          }
-         lastPart = blockStart.BlockEnd ;
+         lastPart = blockStart.BlockEnd;
          return true;
       }
 

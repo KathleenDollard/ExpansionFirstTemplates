@@ -14,11 +14,11 @@ namespace ExpansionFirst.Support
       public class OutputAttributes : Attribute
       { }
 
-      public class OutputAsPartialAttribute : Attribute
+      public class OutputWithoutPartial : Attribute
       {
-         public OutputAsPartialAttribute()
+         public OutputWithoutPartial()
          { }
-         public OutputAsPartialAttribute(bool outputPartial)
+         public OutputWithoutPartial(bool outputPartial)
          { OutputPartial = outputPartial; }
 
          public bool OutputPartial { get; private set; }
