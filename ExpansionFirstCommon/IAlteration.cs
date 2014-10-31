@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ExpansionFirst.Common
 {
-   public interface IInstruction
+   public interface IAlteration
    {
       string Id { get; }
-      bool DoInstruction(IDom part, MetadataContextStack contextStack, List<IDom> retList, ref IDom lastPart);
+      void DoAlteration(IDom item, MetadataContextStack contextStack);
    }
 }

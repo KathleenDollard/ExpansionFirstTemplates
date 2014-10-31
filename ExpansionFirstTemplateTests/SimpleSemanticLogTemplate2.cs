@@ -8,20 +8,6 @@ using System.Threading.Tasks;
 using CodeFirstMetadataTest.SemanticLog;
 using ExpansionFirst.Support;
 
-namespace ExpansionFirst.Support
-{
-   public class _xf_
-   {
-      public class OutputXmlComments : Attribute
-      { }
-
-      public class OutputAttributes : Attribute
-      { }
-   }
-
-
-}
-
 namespace ExpansionFirstTemplateTests2._xf_class_namespaceName
 {
 

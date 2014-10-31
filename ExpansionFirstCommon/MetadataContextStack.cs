@@ -14,8 +14,8 @@ namespace ExpansionFirstTemplates
         public MetadataContext Current
         { get { return metadataStack.Peek(); } }
 
-        public void Push(MetadataContext cotntext)
-        { metadataStack.Push(cotntext); }
+        public void Push(MetadataContext context)
+        { metadataStack.Push(context); }
 
         public void Push(string name, object item)
         {
@@ -24,7 +24,14 @@ namespace ExpansionFirstTemplates
             Push(newContext);
         }
 
-             public MetadataContext Pop()
+      public void Add(string name, object item)
+      {
+         Current.AddValue(name, item);
+      }
+
+
+
+      public MetadataContext Pop()
         { return metadataStack.Pop(); }
 
         public object GetValue(string name)

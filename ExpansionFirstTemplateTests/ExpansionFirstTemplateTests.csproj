@@ -37,22 +37,26 @@
   <ItemGroup>
     <Reference Include="CodeFirstMetadata, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CodeFirstMetadata.1.0.1-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
+      <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstMetadataCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CodeFirstMetadata.1.0.1-alpha\lib\net45\CodeFirstMetadataCommon.dll</HintPath>
+      <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstMetadataCommon.dll</HintPath>
     </Reference>
-    <Reference Include="CodeFirstMetadataT4Support">
+    <Reference Include="CodeFirstMetadataT4Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstMetadataT4Support.dll</HintPath>
     </Reference>
-    <Reference Include="CodeFirstPropertyChanged">
+    <Reference Include="CodeFirstPropertyChanged, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstPropertyChanged.dll</HintPath>
     </Reference>
-    <Reference Include="CodeFirstSemanticLog">
+    <Reference Include="CodeFirstSemanticLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstSemanticLog.dll</HintPath>
     </Reference>
-    <Reference Include="CodeFirstT4Example">
+    <Reference Include="CodeFirstT4Example, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstT4Example.exe</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -134,6 +138,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="NotifyPropertyChanged.cs" />
+    <Compile Include="NotifyPropertyChanged.partial.cs" />
     <Compile Include="SimpleSemanticLogTemplate2.cs" />
     <Compile Include="SimpleSemanticLogTemplate.cs" />
     <Compile Include="SimpleSemanticLogTests.cs" />
@@ -148,6 +154,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TextFile1.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

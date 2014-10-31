@@ -1,11 +1,7 @@
-﻿using ExpansionFirs.tCommon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RoslynDom.Common;
 using System.Text.RegularExpressions;
+using ExpansionFirst.Common;
 
 namespace ExpansionFirstTemplates
 {
@@ -18,19 +14,22 @@ namespace ExpansionFirstTemplates
       public string Id
       { get { return "SetVariable"; } }
 
-        public IEnumerable<IDom> DoInstruction(IDom part,
-                     MetadataContextStack contextStack)
+        public bool DoInstruction(IDom part,
+                     MetadataContextStack contextStack, 
+                     List<IDom> retList, 
+                     ref IDom lastPart)
       {
          var ret = new List<IDom>();
-         if (DoInstruction(part as IPublicAnnotation, contextStack, ret)) return ret;
-         if (DoInstruction(part as IDeclarationStatement, contextStack, ret)) return ret;
-         if (DoInstruction(part as IField, contextStack, ret)) return ret;
-         return null;
+         if (DoInstructionInternal(part as IPublicAnnotation, contextStack, ret, ref lastPart)) return true;
+         if (DoInstructionInternal(part as IDeclarationStatement, contextStack, ret, ref lastPart)) return true;
+         if (DoInstructionInternal(part as IField, contextStack, ret, ref lastPart)) return true;
+         return false;
       }
 
-      private bool DoInstruction(IPublicAnnotation publicAnnotation,
+      private bool DoInstructionInternal(IPublicAnnotation publicAnnotation,
                         MetadataContextStack contextStack,
-                        IEnumerable<IDom> newList)
+                        IEnumerable<IDom> newList,
+                        ref IDom lastPart)
       {
          if (publicAnnotation == null || !(pubilcAnnotationMatch.IsMatch(publicAnnotation.Name))) return false;
          foreach (var key in publicAnnotation.Keys)
@@ -41,9 +40,10 @@ namespace ExpansionFirstTemplates
          return true;
       }
 
-      private bool DoInstruction(IDeclarationStatement declaraion,
-                    MetadataContextStack contextStack,
-                    IEnumerable<IDom> newList)
+      private bool DoInstructionInternal(IDeclarationStatement declaraion,
+                       MetadataContextStack contextStack,
+                       IEnumerable<IDom> newList,
+                       ref IDom lastPart)
       {
          if (declaraion == null ) return false;
          var match = symbolMatch.Match(declaraion.Name);
@@ -55,17 +55,21 @@ namespace ExpansionFirstTemplates
          return true;
       }
 
-            private bool DoInstruction(IField field,
-                          MetadataContextStack contextStack,
-                          IEnumerable<IDom> newList)
+            private bool DoInstructionInternal(IField field,
+                        MetadataContextStack contextStack,
+                        IEnumerable<IDom> newList,
+                        ref IDom lastPart)
       {
          if (field == null) return false;
          var match = symbolMatch.Match(field.Name);
          if (match == null) return false;
          var name = match.Value;
-         // TODO: Allow evaluating expressions in the following
-         var value = field.Initializer.ToString();
-         contextStack.Current.AddValue(name, value);
+         if (field.Initializer != null)
+         {
+            // TODO: Allow evaluating expressions in the following
+            var value = field.Initializer.ToString();
+            contextStack.Current.AddValue(name, value);
+         }
          return true;
       }
    }

@@ -107,12 +107,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="ExpansionFirstTemplate.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IKnownDirective.cs" />
+    <Compile Include="ReplacementAlteration.cs" />
     <Compile Include="SetVariableDirective.cs" />
     <Compile Include="CopyForEachDirective.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ForEachInstruction.cs" />
     <Compile Include="SetVariableInstruction.cs" />
+    <Compile Include="xf.cs" />
     <Compile Include="XfHelpers.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAlteration.cs" />
     <Compile Include="IInstruction.cs" />
     <Compile Include="MetadataContext.cs" />
     <Compile Include="MetadataContextStack.cs" />
