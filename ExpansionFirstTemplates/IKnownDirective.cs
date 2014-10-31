@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RoslynDom.Common;
+using ExpansionFirst.Common;
 
 namespace ExpansionFirstTemplates
 {
-    public interface IKnownDirective
+   public interface IKnownDirective
     {
         string Identifier { get; }
         bool HasAction { get; }

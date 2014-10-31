@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFirstMetadataTest.SemanticLog;
-using ExpansionFirst.Support;
+using ExpansionFirst.TemplateSupport;
 
 namespace ExpansionFirstTemplateTests2._xf_class_namespaceName
 {
@@ -58,8 +58,8 @@ namespace ExpansionFirstTemplateTests2
          #region Your trace event methods
 
          [Event(_xf.Event_EventId)]
-         [_xf_.OutputXmlComments]
-         [_xf_.OutputAttributes]
+         [_xf_.AddStructuredDocs]
+         [_xf_.AddAttributes]
          void _xf_Event_dot_Name()
          {
             if (IsEnabled()) WriteEvent(_xf_Event.EventId, _xf.ArgumentsFrom<object>(_xf_Event));

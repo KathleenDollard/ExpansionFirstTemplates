@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="IAlteration.cs" />
     <Compile Include="IInstruction.cs" />
+    <Compile Include="InstructionHelperForAttributes.cs" />
     <Compile Include="MetadataContext.cs" />
     <Compile Include="MetadataContextStack.cs" />
     <Compile Include="MetadataDefinition.cs" />

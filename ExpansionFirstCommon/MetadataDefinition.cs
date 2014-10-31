@@ -1,4 +1,4 @@
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
     public struct MetadataDefinition
     {

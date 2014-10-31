@@ -107,9 +107,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddtAttributes.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ExpansionFirstTemplate.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="AddStructuredDocsInstruction.cs" />
+    <Compile Include="TemplateStartInstruction.cs" />
     <Compile Include="IKnownDirective.cs" />
     <Compile Include="ReplacementAlteration.cs" />
     <Compile Include="CopyForEachDirective.cs" />

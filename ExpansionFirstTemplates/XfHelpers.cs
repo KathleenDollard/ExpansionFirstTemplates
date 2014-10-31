@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RoslynDom;
-using RoslynDom.Common;
+﻿using RoslynDom.Common;
+using ExpansionFirst.Common;
 
 namespace ExpansionFirstTemplates
 {

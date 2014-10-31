@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using RoslynDom.Common;
+using ExpansionFirst.Common;
 
 namespace ExpansionFirstTemplates
 {

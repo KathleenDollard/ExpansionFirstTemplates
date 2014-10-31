@@ -4,24 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpansionFirst.Support
+namespace ExpansionFirst.TemplateSupport
 {
-   public class _xf_
+   public partial class _xf_
    {
-      public class OutputXmlComments : Attribute
-      { }
-
-      public class OutputAttributes : Attribute
-      { }
-
-      public class OutputWithoutPartial : Attribute
+        public class OutputWithoutPartial : Attribute
       {
          public OutputWithoutPartial()
          { }
-         public OutputWithoutPartial(bool outputPartial)
-         { OutputPartial = outputPartial; }
+         public OutputWithoutPartial(bool withoutPartial)
+         { WithoutPartial = withoutPartial; }
 
-         public bool OutputPartial { get; private set; }
+         public bool WithoutPartial { get; private set; }
       }
 
    }

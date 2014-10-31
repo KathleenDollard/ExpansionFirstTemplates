@@ -4,6 +4,7 @@ using System.Linq;
 using RoslynDom.Common;
 using RoslynDom.CSharp;
 using ExpansionFirst.Common;
+using ExpansionFirst;
 
 namespace ExpansionFirstTemplates
 {
@@ -32,6 +33,8 @@ namespace ExpansionFirstTemplates
       {
          availableInstructions.Add(new SetVariableInstruction());
          availableInstructions.Add(new ForEachInstruction());
+         availableInstructions.Add(new AddStructuredDocsInstruction ());
+         availableInstructions.Add(new AddAttributesInstruction());
       }
 
       public IEnumerable<IRoot> Run<TMetadata>(TMetadata metadata)
@@ -50,20 +53,21 @@ namespace ExpansionFirstTemplates
       {
          var newMemberList = new List<IDom>();
 
-         if (DoInstruction(part, contextStack, newMemberList, ref lastPart)) return newMemberList.OfType<IDom>();
-
          var method = part.GetType().GetMethod("Copy");
          var newItem = method.Invoke(part, null) as IDom;
-         DoReplacements(newItem, contextStack);
-         HandleAttributes(newItem as IHasAttributes , contextStack);
 
-         UpdateProperty(contextStack, newItem as IProperty );
+         if (DoInstruction(part, contextStack, newMemberList, ref lastPart)) return newMemberList.OfType<IDom>();
+
+         DoReplacements(newItem, contextStack);
+         HandleAttributes(newItem as IHasAttributes, contextStack);
+
+         UpdateProperty(contextStack, newItem as IProperty);
          UpdateContainer(contextStack, newMemberList, newItem as IContainer);
 
          return new IDom[] { newItem };
       }
 
-      private void HandleAttributes(IHasAttributes  newItemHasAttributes, MetadataContextStack contextStack)
+      private void HandleAttributes(IHasAttributes newItemHasAttributes, MetadataContextStack contextStack)
       {
          if (newItemHasAttributes == null) return;
          var attributes = newItemHasAttributes.Attributes;
@@ -98,9 +102,10 @@ namespace ExpansionFirstTemplates
          {
             // yes, ugly hack
             IDom dummy = null;
-            var getAccessor = Update(newProperty.GetAccessor, contextStack, ref dummy);
-            newProperty.GetAccessor = getAccessor.First() as IAccessor;
-            newProperty.SetAccessor = Update(newProperty.SetAccessor, contextStack, ref dummy).First() as IAccessor;
+            if (newProperty.GetAccessor != null)
+            { newProperty.GetAccessor = Update(newProperty.GetAccessor, contextStack, ref dummy).First() as IAccessor; }
+            if (newProperty.SetAccessor != null)
+            { newProperty.SetAccessor = Update(newProperty.SetAccessor, contextStack, ref dummy).First() as IAccessor; }
          }
       }
 

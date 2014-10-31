@@ -36,8 +36,12 @@ namespace ExpansionFirstExample
     [NotifyPropertyChanged]
     public class Customer
     {
+        [Required]
         public string FirstName{get; set;}
         public string LastName{get; set;}
+        /// <summary>
+        /// This is the Id
+        /// </summary>
         public int  Id{get; set;}
         public DateTime  BirthDate{get; set;}
     }
