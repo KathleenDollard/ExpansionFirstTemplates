@@ -1,6 +1,4 @@
-﻿using ExpansionFirst.TemplateSupport;
-
-namespace ExpansionFirstTemplateTests
+﻿namespace ExpansionFirstTemplateTests
 {
    namespace NotifyPropertyChanged
    {
@@ -12,8 +10,6 @@ namespace ExpansionFirstTemplateTests
       namespace _xf_Class_dot_Namespace
       {
          //[[// Assumes that the source is a clean and disposable listing of properties that are candidates ]]
-         //[[// for property changed and that there is a partial class with custom code and a base class ]]
-         //[[// that includes a SetProperty method   ]]
          public sealed partial class _xf_Class_dot_Name : INotifyPropertyChanged
          {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -21,7 +17,7 @@ namespace ExpansionFirstTemplateTests
             #region Your own region to show it works
             #region [[ _xf_ForEach(LoopOver="Class.Properties", VarName="Property") ]]
 
-            // PropertyName:          _xf_Property_dot_Name
+            // PropertyName:          _xf_Property_dot_Name 
             // PropertyName as camel: _xf_Property_dot_Name_as_CamelCase
             private _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name_as_CamelCase;
             public _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name

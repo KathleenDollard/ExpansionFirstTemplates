@@ -36,12 +36,8 @@ namespace ExpansionFirstExample
     [NotifyPropertyChanged]
     public class Customer
     {
-        [Required]
         public string FirstName{get; set;}
         public string LastName{get; set;}
-        /// <summary>
-        /// This is the Id
-        /// </summary>
         public int  Id{get; set;}
         public DateTime  BirthDate{get; set;}
     }
@@ -94,7 +90,7 @@ namespace _xf_class_namespaceName
       [TestMethod]
       public void Can_get_simple_output()
       {
-         var xfTemplate = ExpansionFirstTemplate.Load(template);
+         var xfTemplate = ExpansionFirstCSharp.Load(template);
          var metadataLoader = new CodeFirstMetadataLoader<CodeFirstSemanticLogGroup>();
          CodeFirstSemanticLogGroup metadata = metadataLoader.LoadFromString(logMetadataSource, logAttributeIdentifier);
          var newRoots = xfTemplate.Run(metadata);
@@ -122,14 +118,25 @@ namespace _xf_class_namespaceName
          var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
          //Assert.AreEqual(csharpCode, verify);
 
-         var xfTemplate = ExpansionFirstTemplate.LoadFromFile(@"..\..\NotifyPropertyChanged.cs");
+         var xfTemplate = ExpansionFirstCSharp.LoadFromFile(@"..\..\NotifyPropertyChanged.cs");
          var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
          CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);
          var newRoots = xfTemplate.Run(metadata);
          var newRDomRoot = newRoots.First() as RDomRoot;
          var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
          var output = outputSyntax.ToFullString();
+         output = CleanOutput(output);
          Assert.Inconclusive();
+      }
+
+      // TODO: Fix this ugly aftermarket hack
+      private string CleanOutput(string output)
+      {
+         output = output.SubstringAfter("_xf_TemplateStart()");
+         output = output.SubstringAfter("\r\n");
+         output = output.SubstringBeforeLast("#endregion");
+         output = output            .SubstringBeforeLast("\r\n");
+         return output;
       }
 
       [TestMethod]
@@ -152,7 +159,7 @@ namespace ExpansionFirstTemplateTests
          var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
          Assert.AreEqual(csharpCode, verify);
 
-         var xfTemplate = ExpansionFirstTemplate.Load(csharpCode);
+         var xfTemplate = ExpansionFirstCSharp.Load(csharpCode);
          var metadataLoader = new CodeFirstMetadataLoader<CodeFirstSemanticLogGroup>();
          CodeFirstSemanticLogGroup metadata = metadataLoader.LoadFromString(logMetadataSource, logAttributeIdentifier);
          var newRoots = xfTemplate.Run(metadata);

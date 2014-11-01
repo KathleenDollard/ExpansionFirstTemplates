@@ -74,24 +74,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Unity.3.5.1405-prerelease\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
     </Reference>
-    <Reference Include="RoslynDom, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RoslynDom">
       <HintPath>..\packages\RoslynDomCSharpFactories.1.0.14-alpha\lib\net45\RoslynDom.dll</HintPath>
     </Reference>
-    <Reference Include="RoslynDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RoslynDomCommon">
       <HintPath>..\packages\RoslynDomCSharpFactories.1.0.14-alpha\lib\net45\RoslynDomCommon.dll</HintPath>
     </Reference>
-    <Reference Include="RoslynDomCSharpFactories, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RoslynDomCSharpFactories">
       <HintPath>..\packages\RoslynDomCSharpFactories.1.0.14-alpha\lib\net45\RoslynDomCSharpFactories.dll</HintPath>
     </Reference>
-    <Reference Include="RoslynDomRDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RoslynDomRDomCommon">
       <HintPath>..\packages\RoslynDomCSharpFactories.1.0.14-alpha\lib\net45\RoslynDomRDomCommon.dll</HintPath>
     </Reference>
-    <Reference Include="RoslynDomUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RoslynDomUtilities">
       <HintPath>..\packages\RoslynDomCSharpFactories.1.0.14-alpha\lib\net45\RoslynDomUtilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -107,18 +102,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddtAttributes.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="ExpansionFirstTemplate.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="AddStructuredDocsInstruction.cs" />
-    <Compile Include="TemplateStartInstruction.cs" />
-    <Compile Include="IKnownDirective.cs" />
-    <Compile Include="ReplacementAlteration.cs" />
-    <Compile Include="CopyForEachDirective.cs" />
+    <Compile Include="ExpansionFirstCSharp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ForEachInstruction.cs" />
-    <Compile Include="SetVariableInstruction.cs" />
     <Compile Include="xf.cs" />
     <Compile Include="XfHelpers.cs" />
   </ItemGroup>

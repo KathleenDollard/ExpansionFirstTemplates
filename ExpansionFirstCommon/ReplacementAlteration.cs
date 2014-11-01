@@ -6,7 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
    public class ReplacementAlteration : IAlteration
    {

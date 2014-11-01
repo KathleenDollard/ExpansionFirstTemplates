@@ -1,38 +1,58 @@
-using ExpansionFirst.Support;
-
+output ,nq
 namespace ExpansionFirstTemplateTests
 {
    namespace NotifyPropertyChanged
    {
-      #region _xf_MakeFileForEach(Over="Meta.Classes", VarName="class_") 
+      #region [[ _xf_TemplateStart() ]]
       using System.ComponentModel;
 
-#region [[ _xf_ForEach(LoopOver="Meta.Classes", VarName="Class") ]]
-      namespace _xf_Class_namespaceName
+      namespace ExpansionFirstExample
       {
-         [_xf_.OutputAsPartial]
-         public sealed class _xf_Class_dot_Name : INotifyPropertyChanged
+         public sealed class Customer : INotifyPropertyChanged
          {
             public event PropertyChangedEventHandler PropertyChanged;
 
-#region [[ _xf_ForXEach(LoopOver="_xf_Class_dot_Properties", LoopVar="Property") ]]
-#region Your properties - just included so you could see normal regions still work
+#region Your own region to show it works
 
-            private _xf_Property_dot_Type _xf_Camel_Property_dot_Name;
-            [_xf_.OutputXmlComments]
-            [_xf_.OutputAttributes]
-            public _xf_Property_dot_Type _xf_Property_dot_Name
+            // PropertyName:          FirstName
+            // PropertyName as camel: firstName
+            private String firstName;
+            public String FirstName
             {
-               get { return _xf_Camel_Property_dot_Name; }
-               set { SetProperty(ref _xf_Camel_Property_dot_Name, value); }
+               get { return firstName; }
+               set { SetProperty(ref firstName, value); }
             }
-            #endregion
+
+            // PropertyName:          LastName
+            // PropertyName as camel: lastName
+            private String lastName;
+            public String LastName
+            {
+               get { return lastName; }
+               set { SetProperty(ref lastName, value); }
+            }
+
+            // PropertyName:          Id
+            // PropertyName as camel: id
+            private Int32 id;
+            public Int32 Id
+            {
+               get { return id; }
+               set { SetProperty(ref id, value); }
+            }
+
+            // PropertyName:          BirthDate
+            // PropertyName as camel: birthDate
+            private DateTime birthDate;
+            public DateTime BirthDate
+            {
+               get { return birthDate; }
+               set { SetProperty(ref birthDate, value); }
+            }
             #endregion
          }
       }
-
-#endregion
-
-#endregion
+      #endregion
    }
 }
+

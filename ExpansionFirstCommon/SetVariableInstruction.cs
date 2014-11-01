@@ -3,7 +3,7 @@ using RoslynDom.Common;
 using System.Text.RegularExpressions;
 using ExpansionFirst.Common;
 
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
 
    public class SetVariableInstruction : IInstruction
@@ -17,7 +17,8 @@ namespace ExpansionFirstTemplates
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
                    List<IDom> retList,
-                   ref IDom lastPart)
+                   ref IDom lastPart,
+                   ref bool reRootTemplate)
       {
          var ret = new List<IDom>();
          if (DoInstructionInternal(part as IPublicAnnotation, contextStack, ret)) return true;

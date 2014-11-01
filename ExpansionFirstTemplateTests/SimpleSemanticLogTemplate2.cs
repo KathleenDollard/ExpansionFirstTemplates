@@ -1,12 +1,7 @@
 ﻿#define xf_special
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CodeFirstMetadataTest.SemanticLog;
-using ExpansionFirst.TemplateSupport;
+using ExpansionFirst.Common;
 
 namespace ExpansionFirstTemplateTests2._xf_class_namespaceName
 {

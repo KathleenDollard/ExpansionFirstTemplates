@@ -8,18 +8,30 @@ using System.Collections;
 using RoslynDom;
 using System;
 
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
 
-   public class TemplateStartInstruction : IInstruction
+   public class ForEachInstruction : IInstruction
    {
+      private InstructionHelper helper = new InstructionHelper();
+
+      // TODO: Move param string to central location
+      private const string paramString = @"\s*{0}\s*[=:]\s*\""(?<{0}>.*)\""\s*";
+      private const string loopOverKey = "LoopOver";
+      private const string varNameKey = "VarName";
+      private static string loopOverRegex = string.Format(paramString, loopOverKey);
+      private static string varNameRegex = string.Format(paramString, varNameKey);
+      private static string regExString = string.Format(@"_xf_ForEach\s*\({0},{1}\)", loopOverRegex, varNameRegex);
+      private static Regex blockStartMatch = new Regex(regExString);
+
       public string Id
-      { get { return "TemplateStart"; } }
+      { get { return "ForEach"; } }
 
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
                    List<IDom> retList,
-                   ref IDom lastPart)
+                   ref IDom lastPart,
+                   ref bool reRootTemplate)
       {
          if (DoInstructionInternal(part as IDetailBlockStart, contextStack, retList, ref lastPart)) return true;
          return false;
@@ -37,31 +49,12 @@ namespace ExpansionFirstTemplates
 
          var varName = match.Groups[varNameKey].Value;
          IEnumerable propAsIEnumerable = GetEnumerable(contextStack, match);
-         var expansionFirstRunner = contextStack.GetValue(Constants.ExpansionFirstRunner) as ExpansionFirstTemplate;
-         var container = blockStart.Ancestors.OfType<IContainer>().First();
+         //var container = blockStart.Ancestors.OfType<IContainer>().First();
          var blockContents = blockStart.BlockContents;
          foreach (var item in propAsIEnumerable)
          {
             contextStack.Push(varName, item);
-            var member = blockContents.FirstOrDefault();
-            var i = 0;
-            while (member != null && blockContents.Contains(member))
-            {
-               i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
-               var lastMember = member;
-               var copiedMember = member.GetType().GetMethod("Copy").Invoke(member, null) as IDom;
-               var newMembers = expansionFirstRunner.Update(copiedMember, contextStack, ref lastMember);
-               // don't store the end region that matches this block start, because it's being removed
-               newMembers = newMembers
-                              .Where(x =>
-                              {
-                                 var block = x as IDetailBlockEnd;
-                                 if (block == null) return true;
-                                 return (block.GroupGuid != blockStart.GroupGuid);
-                              });
-               newList.AddRange(newMembers);
-               member = lastMember.NextSibling();
-            }
+            helper.RunOneLoop(blockContents,blockStart,  contextStack, newList);
             contextStack.Pop();
          }
          lastPart = blockStart.BlockEnd;

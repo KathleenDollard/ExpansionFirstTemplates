@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
    public class Constants
    {

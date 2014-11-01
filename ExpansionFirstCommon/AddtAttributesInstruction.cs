@@ -1,19 +1,11 @@
 ﻿using System.Collections.Generic;
 using RoslynDom.Common;
-using RoslynDom.RoslynDomUtilities;
-using System.Text.RegularExpressions;
-using ExpansionFirst.Common;
-using System.Linq;
-using System.Collections;
-using RoslynDom;
 using System;
-using ExpansionFirstTemplates;
 
-namespace ExpansionFirst
+namespace ExpansionFirst.Common
 {
-   namespace TemplateSupport
-   {
-      public partial class _xf_
+
+   public partial class _xf_
       {
          public class AddtAttributesAttribute : Attribute
          {
@@ -25,11 +17,10 @@ namespace ExpansionFirst
             public string SourceName { get; private set; }
          }
       }
-   }
 
    public class AddAttributesInstruction : IInstruction
    {
-      private InstructionHelperForAttributes helper = new InstructionHelperForAttributes();
+      private InstructionHelper helper = new InstructionHelper();
 
       public string Id
       { get { return "AddAttributes"; } }
@@ -37,7 +28,8 @@ namespace ExpansionFirst
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
                    List<IDom> retList,
-                   ref IDom lastPart)
+                   ref IDom lastPart,
+                   ref bool reRootTemplate)
       {
          // always return false, even if this does somethign, it doesn't take care of the underlying part
          var candidates = helper.GetMatchingAttributes(part, Id);

@@ -7,7 +7,7 @@ using RoslynDom.Common;
 
 namespace ExpansionFirst.Common
 {
-   public class InstructionHelperForAttributes
+   public class InstructionHelper
    {
       public IEnumerable<IAttribute> GetMatchingAttributes(IDom item, string id)
       {
@@ -42,6 +42,31 @@ namespace ExpansionFirst.Common
             { value = contextStack.RecentOfType<T>().Item2; }
          }
          return value;
+      }
+
+      public void RunOneLoop(IEnumerable<IDom> blockContents, IDetailBlockStart blockStart,
+                     MetadataContextStack contextStack, List<IDom> newList)
+      {
+         var expansionFirstRunner = contextStack.GetValue(Constants.ExpansionFirstRunner) as ExpansionFirstTemplate;
+         var member = blockContents.FirstOrDefault();
+         var i = 0;
+         while (member != null && blockContents.Contains(member))
+         {
+            i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
+            var lastMember = member;
+            var copiedMember = member.GetType().GetMethod("Copy").Invoke(member, null) as IDom;
+            var newMembers = expansionFirstRunner.Update(copiedMember, contextStack, ref lastMember);
+            // don't store the end region that matches this block start, because it's being removed
+            newMembers = newMembers
+                           .Where(x =>
+                           {
+                              var block = x as IDetailBlockEnd;
+                              if (block == null) return true;
+                              return (block.GroupGuid != blockStart.GroupGuid);
+                           });
+            newList.AddRange(newMembers);
+            member = lastMember.NextSibling();
+         }
       }
    }
 }

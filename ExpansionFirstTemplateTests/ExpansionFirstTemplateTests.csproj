@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CodeFirstCSharp">
+      <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstCSharp.dll</HintPath>
+    </Reference>
     <Reference Include="CodeFirstMetadata, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CodeFirstT4Example.1.0.1-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
@@ -146,6 +149,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExpansionFirstCommon\ExpansionFirstCommon.csproj">
+      <Project>{e27e52df-d269-48b2-a8cf-40d1e0ab0424}</Project>
+      <Name>ExpansionFirstCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExpansionFirstTemplates\ExpansionFirstTemplates.csproj">
       <Project>{4ccf74f8-0360-42c4-970a-bc1c48edc5a2}</Project>
       <Name>ExpansionFirstTemplates</Name>

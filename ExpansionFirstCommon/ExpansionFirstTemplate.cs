@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using RoslynDom.Common;
-using RoslynDom.CSharp;
 using ExpansionFirst.Common;
 using ExpansionFirst;
 
-namespace ExpansionFirstTemplates
+namespace ExpansionFirst.Common
 {
    public class ExpansionFirstTemplate
    {
@@ -14,27 +13,18 @@ namespace ExpansionFirstTemplates
       private List<IInstruction> availableInstructions = new List<IInstruction>();
       private ReplacementAlteration replacementAlteration = new ReplacementAlteration();
 
-      private ExpansionFirstTemplate() { } // Block instantiation
-      public static ExpansionFirstTemplate LoadFromFile(string fileName)
+      public ExpansionFirstTemplate(IRoot templateRoot)
       {
-         var newTemplate = new ExpansionFirstTemplate();
-         newTemplate.templateRoot = RDom.CSharp.LoadFromFile(fileName);
-         return newTemplate;
-      }
-
-      public static ExpansionFirstTemplate Load(string code)
-      {
-         var newTemplate = new ExpansionFirstTemplate();
-         newTemplate.templateRoot = RDom.CSharp.Load(code);
-         return newTemplate;
+         this.templateRoot = templateRoot;
       }
 
       private void Initialize()
       {
          availableInstructions.Add(new SetVariableInstruction());
          availableInstructions.Add(new ForEachInstruction());
-         availableInstructions.Add(new AddStructuredDocsInstruction ());
+         availableInstructions.Add(new AddStructuredDocsInstruction());
          availableInstructions.Add(new AddAttributesInstruction());
+         availableInstructions.Add(new TemplateStartInstruction());
       }
 
       public IEnumerable<IRoot> Run<TMetadata>(TMetadata metadata)
@@ -56,7 +46,11 @@ namespace ExpansionFirstTemplates
          var method = part.GetType().GetMethod("Copy");
          var newItem = method.Invoke(part, null) as IDom;
 
-         if (DoInstruction(part, contextStack, newMemberList, ref lastPart)) return newMemberList.OfType<IDom>();
+         bool reRoot = false;
+         if (DoInstruction(part, contextStack, newMemberList, ref lastPart, ref reRoot))
+         {
+            return newMemberList.OfType<IDom>();
+         }
 
          DoReplacements(newItem, contextStack);
          HandleAttributes(newItem as IHasAttributes, contextStack);
@@ -204,13 +198,14 @@ namespace ExpansionFirstTemplates
 
 
       private bool DoInstruction(IDom part, MetadataContextStack contextStack, List<IDom> retList,
-                                    ref IDom lastPart)
+                                    ref IDom lastPart, ref bool reRootTemplate)
       {
          //var publicAnnotation = part as IPublicAnnotation;
          //if (publicAnnotation == null) return false;
          foreach (var instruction in availableInstructions)
          {
-            if (instruction.DoInstruction(part, contextStack, retList, ref lastPart))
+            bool reRoot = false;
+            if (instruction.DoInstruction(part, contextStack, retList, ref lastPart, ref reRoot))
             { return true; }
          }
          return false;
