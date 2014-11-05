@@ -118,7 +118,18 @@ namespace _xf_class_namespaceName
          var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
          //Assert.AreEqual(csharpCode, verify);
 
-         var xfTemplate = ExpansionFirstCSharp.LoadFromFile(@"..\..\NotifyPropertyChanged.cs");
+         TestCodeFirstClassGroup(@"..\..\NotifyPropertyChanged.cs");
+      }
+
+      [TestMethod]
+      public void Can_get_NotifyPropertyChanged2_output()
+      {
+         TestCodeFirstClassGroup(@"..\..\NotifyPropertyChanged2.cs");
+      }
+
+      private void TestCodeFirstClassGroup(string templateFileName)
+      {
+         var xfTemplate = ExpansionFirstCSharp.LoadFromFile(templateFileName);
          var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
          CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);
          var newRoots = xfTemplate.Run(metadata);
@@ -128,6 +139,7 @@ namespace _xf_class_namespaceName
          output = CleanOutput(output);
          Assert.Inconclusive();
       }
+
 
       // TODO: Fix this ugly aftermarket hack
       private string CleanOutput(string output)

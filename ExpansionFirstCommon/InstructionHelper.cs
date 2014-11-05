@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoslynDom.Common;
+using System.Text.RegularExpressions;
 
 namespace ExpansionFirst.Common
 {
    public class InstructionHelper
    {
+
       public IEnumerable<IAttribute> GetMatchingAttributes(IDom item, string id)
       {
          var itemHasAttributes = item as IHasAttributes;
@@ -44,8 +46,36 @@ namespace ExpansionFirst.Common
          return value;
       }
 
+      public Regex BuildSpecificParamRegex(string instructionName, params string[] expectedParams)
+      {
+         var paramPattern = @"\s*{0}\s*[=:]\s*\""(?<{0}>.*)\""\s*";
+         if (!instructionName.StartsWith(Constants.Prefix)) instructionName = Constants.Prefix + instructionName;
+         var regexString = instructionName + @"\s*\(";
+         var last = expectedParams.Count();
+         for (int i = 0; i < last; i++)
+         {
+            regexString += string.Format(paramPattern, expectedParams[i]) + ",";
+         }
+         regexString = regexString.Substring(0, regexString.Length - 1) + @"\)";
+         return new Regex(regexString);
+      }
+
+      public Regex BuildGeneralParamRegex(string instructionName)
+      {
+         var paramPattern = @"\s*(.*)\s*[=:]\s*\(.*)\s*";
+         if (!instructionName.StartsWith(Constants.Prefix)) instructionName = Constants.Prefix + instructionName;
+         var regexString = instructionName + @"\s*\(" + paramPattern +  @"\)";
+         return new Regex(regexString);
+      }
+
+      public string PushToContext(string key, object value, MetadataContextStack contextStack)
+      {
+         contextStack.Current.AddValue(key, value);
+         return key;
+      }
+
       public void RunOneLoop(IEnumerable<IDom> blockContents, IDetailBlockStart blockStart,
-                     MetadataContextStack contextStack, List<IDom> newList)
+                        MetadataContextStack contextStack, List<IDom> newList)
       {
          var expansionFirstRunner = contextStack.GetValue(Constants.ExpansionFirstRunner) as ExpansionFirstTemplate;
          var member = blockContents.FirstOrDefault();
@@ -68,5 +98,6 @@ namespace ExpansionFirst.Common
             member = lastMember.NextSibling();
          }
       }
+
    }
 }

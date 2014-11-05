@@ -8,11 +8,15 @@ namespace ExpansionFirst.Common
 
    public class SetVariableInstruction : IInstruction
    {
-      private Regex pubilcAnnotationMatch = new Regex(@"_xf_SetVariable");
-      private Regex symbolMatch = new Regex(@"_xf_Set_(\w+)");
+      private InstructionHelper helper = new InstructionHelper();
+
+      //private Regex pubilcAnnotationMatch = new Regex(@"_xf_SetVariable");
+      //private Regex symbolMatch = new Regex(@"_xf_Set\(\w+\)");
+      private const string id = "SetVariable";
+      private string matchString = Constants.Prefix + id;
 
       public string Id
-      { get { return "SetVariable"; } }
+      { get { return id; } }
 
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
@@ -20,37 +24,55 @@ namespace ExpansionFirst.Common
                    ref IDom lastPart,
                    ref bool reRootTemplate)
       {
-         var ret = new List<IDom>();
+         var ret = new List<IDom>(); // block changes to the passed list
          if (DoInstructionInternal(part as IPublicAnnotation, contextStack, ret)) return true;
          if (DoInstructionInternal(part as IDeclarationStatement, contextStack, ret)) return true;
          if (DoInstructionInternal(part as IField, contextStack, ret)) return true;
          return false;
       }
 
+      private bool NameMatches(string candidate, bool fullName = false)
+      {
+         if (fullName) return candidate == matchString;
+         return candidate.StartsWith(matchString);
+      }
+
+      private void PushToContext(MetadataContextStack contextStack, string key,object value, bool fullName = false)
+      {
+         if (!fullName) key = key.SubstringAfter(matchString + "_");
+         contextStack.Add(key, value);
+      }
+
       private bool DoInstructionInternal(IPublicAnnotation publicAnnotation,
                         MetadataContextStack contextStack,
                         IEnumerable<IDom> newList)
       {
-         if (publicAnnotation == null || !(pubilcAnnotationMatch.IsMatch(publicAnnotation.Name))) return false;
+         if (publicAnnotation == null) return false;
+         if (!NameMatches(publicAnnotation.Name, true)) return false;
          foreach (var key in publicAnnotation.Keys)
          {
             var value = publicAnnotation.GetValue(key);
-            contextStack.Current.AddValue(key, value);
+            PushToContext(contextStack, key, value, true);
+            //contextStack.Current.AddValue(key, value);
          }
          return true;
       }
 
-      private bool DoInstructionInternal(IDeclarationStatement declaraion,
+      private bool DoInstructionInternal(IDeclarationStatement declaration,
                        MetadataContextStack contextStack,
                         IEnumerable<IDom> newList)
       {
-         if (declaraion == null) return false;
-         var match = symbolMatch.Match(declaraion.Name);
-         if (!match .Success) return false;
-         var name = match.Value;
-         // TODO: Allow evaluating expressions in the following
-         var value = declaraion.Initializer.ToString();
-         contextStack.Current.AddValue(name, value);
+         if (declaration == null) return false;
+         if (!NameMatches(declaration.Name)) return false;
+         var name = declaration.Name;
+         object value = null;
+         if (declaration.Initializer != null)
+         {
+            // TODO: Allow evaluating expressions in the following
+            value = declaration.Initializer.Expression.ToString();
+         }
+         PushToContext(contextStack, name, value);
+         //contextStack.Current.AddValue(name, value);
          return true;
       }
 
@@ -59,15 +81,16 @@ namespace ExpansionFirst.Common
                   IEnumerable<IDom> newList)
       {
          if (field == null) return false;
-         var match = symbolMatch.Match(field.Name);
-         if (!match .Success) return false;
-         var name = match.Value;
+         if (!NameMatches(field.Name)) return false;
+         var name = field.Name;
+         object value = null;
          if (field.Initializer != null)
          {
             // TODO: Allow evaluating expressions in the following
-            var value = field.Initializer.ToString();
-            contextStack.Current.AddValue(name, value);
+            value = field.Initializer.Expression.ToString();
          }
+         PushToContext(contextStack, name, value);
+         //contextStack.Current.AddValue(name, value);
          return true;
       }
    }

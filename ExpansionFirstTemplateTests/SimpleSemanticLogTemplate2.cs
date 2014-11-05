@@ -53,8 +53,8 @@ namespace ExpansionFirstTemplateTests2
          #region Your trace event methods
 
          [Event(_xf.Event_EventId)]
-         [_xf_.AddStructuredDocs]
-         [_xf_.AddAttributes]
+         [_xf_.StructuredDocs]
+         [_xf_.Attributes]
          void _xf_Event_dot_Name()
          {
             if (IsEnabled()) WriteEvent(_xf_Event.EventId, _xf.ArgumentsFrom<object>(_xf_Event));

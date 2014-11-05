@@ -23,7 +23,7 @@ namespace ExpansionFirst.Common
          availableInstructions.Add(new SetVariableInstruction());
          availableInstructions.Add(new ForEachInstruction());
          availableInstructions.Add(new AddStructuredDocsInstruction());
-         availableInstructions.Add(new AddAttributesInstruction());
+         availableInstructions.Add(new AttributesInstruction());
          availableInstructions.Add(new TemplateStartInstruction());
       }
 

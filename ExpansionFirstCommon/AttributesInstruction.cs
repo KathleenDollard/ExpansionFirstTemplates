@@ -1,34 +1,29 @@
 ﻿using System.Collections.Generic;
 using RoslynDom.Common;
 using System;
-using CodeFirst.Common;
 
 namespace ExpansionFirst.Common
 {
 
    public partial class _xf_
-   {
-      public class AddAttributesAttribute : Attribute
       {
+         public class AttributesAttribute : Attribute
+         {
+            public AttributesAttribute()
+            { }
+            public AttributesAttribute(string sourceName)
+            { SourceName = sourceName; }
+
+            public string SourceName { get; private set; }
+         }
       }
 
-      public class AddStructuredDocsAttribute : Attribute
-      {
-         public AddStructuredDocsAttribute()
-         { }
-         public AddStructuredDocsAttribute(string sourceName)
-         { SourceName = sourceName; }
-
-         public string SourceName { get; private set; }
-      }
-   }
-
-   public class AddStructuredDocsInstruction : IInstruction
+   public class AttributesInstruction : IInstruction
    {
       private InstructionHelper helper = new InstructionHelper();
 
       public string Id
-      { get { return "AddStructuredDocs"; } }
+      { get { return "Attributes"; } }
 
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
@@ -47,11 +42,11 @@ namespace ExpansionFirst.Common
 
       private bool HandleAttribute(IAttribute attribute, IHasAttributes item, MetadataContextStack contextStack, List<IDom> newList, ref IDom lastPart)
       {
-         var value = helper.GetBestMetadata<CodeFirstMetadata>(attribute, contextStack);
-         var targetHasStructuredDocs = item as IHasStructuredDocumentation;
-         if (value != null && targetHasStructuredDocs != null && !string.IsNullOrWhiteSpace(value.XmlCommentString))
+         if (item == null) return false;
+         var value = helper.GetBestMetadata<IHasAttributes>(attribute, contextStack);
+         if (value != null)
          {
-            // targetHasStructuredDocs.StructuredDocumentation = value.XmlCommentString ;
+            item.Attributes.AddOrMoveAttributeRange(value.Attributes);
          }
          return false;
       }

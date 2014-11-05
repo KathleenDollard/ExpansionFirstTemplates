@@ -1,7 +1,8 @@
 ﻿namespace ExpansionFirstTemplateTests
 {
-   namespace NotifyPropertyChanged
+   namespace NotifyPropertyChanged2
    {
+      using ExpansionFirst.Common;
       #region [[ _xf_TemplateStart() ]]
       using System.ComponentModel;
 
@@ -9,8 +10,14 @@
       #region [[ _xf_ForEach(LoopOver="Meta.Classes", VarName="Class") ]]
       namespace _xf_Class_dot_Namespace
       {
+         [_xf_.Attributes]
          public sealed partial class _xf_Class_dot_Name : INotifyPropertyChanged
          {
+            // Instruction exercise
+            private int _xf_SetVariable_Fred = 42;
+            //[[ _xf_SetVariable(George=44) ]]
+            // Fred values _xf_Fred, _xf_George
+
             public event PropertyChangedEventHandler PropertyChanged;
             #region [[ _xf_ForEach(LoopOver="Class.Properties", VarName="Property") ]]
 

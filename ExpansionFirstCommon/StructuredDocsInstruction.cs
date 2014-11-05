@@ -1,29 +1,30 @@
 ﻿using System.Collections.Generic;
 using RoslynDom.Common;
 using System;
+using CodeFirst.Common;
 
 namespace ExpansionFirst.Common
 {
 
    public partial class _xf_
+   {
+      public class StructuredDocsAttribute : Attribute
       {
-         public class AddtAttributesAttribute : Attribute
-         {
-            public AddtAttributesAttribute()
-            { }
-            public AddtAttributesAttribute(string sourceName)
-            { SourceName = sourceName; }
+         public StructuredDocsAttribute()
+         { }
+         public StructuredDocsAttribute(string sourceName)
+         { SourceName = sourceName; }
 
-            public string SourceName { get; private set; }
-         }
+         public string SourceName { get; private set; }
       }
+   }
 
-   public class AddAttributesInstruction : IInstruction
+   public class AddStructuredDocsInstruction : IInstruction
    {
       private InstructionHelper helper = new InstructionHelper();
 
       public string Id
-      { get { return "AddAttributes"; } }
+      { get { return "StructuredDocs"; } }
 
       public bool DoInstruction(IDom part,
                    MetadataContextStack contextStack,
@@ -42,11 +43,11 @@ namespace ExpansionFirst.Common
 
       private bool HandleAttribute(IAttribute attribute, IHasAttributes item, MetadataContextStack contextStack, List<IDom> newList, ref IDom lastPart)
       {
-         if (item == null) return false;
-         var value = helper.GetBestMetadata<IHasAttributes>(attribute, contextStack);
-         if (value != null)
+         var value = helper.GetBestMetadata<CodeFirstMetadata>(attribute, contextStack);
+         var targetHasStructuredDocs = item as IHasStructuredDocumentation;
+         if (value != null && targetHasStructuredDocs != null && !string.IsNullOrWhiteSpace(value.XmlCommentString))
          {
-            item.Attributes.AddOrMoveAttributeRange(value.Attributes);
+            // targetHasStructuredDocs.StructuredDocumentation = value.XmlCommentString ;
          }
          return false;
       }
