@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InstructionBase.cs" />
     <Compile Include="StructuredDocsInstruction.cs" />
     <Compile Include="AttributesInstruction.cs" />
     <Compile Include="Constants.cs" />

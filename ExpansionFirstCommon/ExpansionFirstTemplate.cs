@@ -205,7 +205,7 @@ namespace ExpansionFirst.Common
          foreach (var instruction in availableInstructions)
          {
             bool reRoot = false;
-            if (instruction.DoInstruction(part, contextStack, retList, ref lastPart, ref reRoot))
+            if (instruction.BeforeCopy (part, contextStack, retList, ref lastPart))
             { return true; }
          }
          return false;

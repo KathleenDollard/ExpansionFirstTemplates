@@ -99,5 +99,7 @@ namespace ExpansionFirst.Common
          }
       }
 
+      public string MakeMarker(string id)
+      { return Constants.Prefix + id; }
    }
 }

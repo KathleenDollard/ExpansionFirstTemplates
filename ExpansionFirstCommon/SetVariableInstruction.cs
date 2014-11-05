@@ -6,28 +6,22 @@ using ExpansionFirst.Common;
 namespace ExpansionFirst.Common
 {
 
-   public class SetVariableInstruction : IInstruction
+   public class SetVariableInstruction : InstructionBase 
    {
-      private InstructionHelper helper = new InstructionHelper();
-
-      //private Regex pubilcAnnotationMatch = new Regex(@"_xf_SetVariable");
-      //private Regex symbolMatch = new Regex(@"_xf_Set\(\w+\)");
       private const string id = "SetVariable";
       private string matchString = Constants.Prefix + id;
 
-      public string Id
-      { get { return id; } }
+      public SetVariableInstruction() : base(id) { }
 
-      public bool DoInstruction(IDom part,
-                   MetadataContextStack contextStack,
-                   List<IDom> retList,
-                   ref IDom lastPart,
-                   ref bool reRootTemplate)
+      public override bool BeforeCopy(IDom sharedPart, 
+                  MetadataContextStack contextStack, 
+                  List<IDom> retList, 
+                  ref IDom lastPart)
       {
          var ret = new List<IDom>(); // block changes to the passed list
-         if (DoInstructionInternal(part as IPublicAnnotation, contextStack, ret)) return true;
-         if (DoInstructionInternal(part as IDeclarationStatement, contextStack, ret)) return true;
-         if (DoInstructionInternal(part as IField, contextStack, ret)) return true;
+         if (DoInstructionInternal(sharedPart as IPublicAnnotation, contextStack, ret)) return true;
+         if (DoInstructionInternal(sharedPart as IDeclarationStatement, contextStack, ret)) return true;
+         if (DoInstructionInternal(sharedPart as IField, contextStack, ret)) return true;
          return false;
       }
 

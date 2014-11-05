@@ -11,36 +11,26 @@ using System;
 namespace ExpansionFirst.Common
 {
 
-   public class ForEachInstruction : IInstruction
+   public class ForEachInstruction : InstructionBase
    {
-      private InstructionHelper helper = new InstructionHelper();
-
-      // TODO: Move param string to central location
       private static Regex blockStartMatch;
       private const string loopOverKey = "LoopOver";
       private const string varNameKey = "VarName";
-      private const string instructionName = "ForEach";
-      //private const string paramString = @"\s*{0}\s*[=:]\s*\""(?<{0}>.*)\""\s*";
-      //private static string loopOverRegex = string.Format(paramString, loopOverKey);
-      //private static string varNameRegex = string.Format(paramString, varNameKey);
-      //private static string regExString = string.Format(@"_xf_ForEach\s*\({0},{1}\)", loopOverRegex, varNameRegex);
-      //private static Regex blockStartMatch = new Regex(regExString);
+      private const string id = "ForEach";
 
-      public string Id
-      { get { return "ForEach"; } }
+      public ForEachInstruction() : base(id) { }
 
-      public bool DoInstruction(IDom part,
-                   MetadataContextStack contextStack,
-                   List<IDom> retList,
-                   ref IDom lastPart,
-                   ref bool reRootTemplate)
+      public override bool BeforeCopy(IDom sharedPart, 
+                  MetadataContextStack contextStack, 
+                  List<IDom> retList, 
+                  ref IDom lastPart)
       {
-         blockStartMatch = helper.BuildSpecificParamRegex(instructionName, loopOverKey, varNameKey);
-         if (DoInstructionInternal(part as IDetailBlockStart, contextStack, retList, ref lastPart)) return true;
+         blockStartMatch = Helper.BuildSpecificParamRegex(id, loopOverKey, varNameKey);
+         if (DoInstructionInternal(sharedPart as IDetailBlockStart, contextStack, retList, ref lastPart)) return true;
          return false;
       }
 
-      private bool DoInstructionInternal(IDetailBlockStart blockStart,
+         private bool DoInstructionInternal(IDetailBlockStart blockStart,
                         MetadataContextStack contextStack,
                         List<IDom> newList,
                         ref IDom lastPart)
@@ -56,7 +46,7 @@ namespace ExpansionFirst.Common
          foreach (var item in propAsIEnumerable)
          {
             contextStack.Push(varName, item);
-            helper.RunOneLoop(blockContents, blockStart, contextStack, newList);
+            Helper.RunOneLoop(blockContents, blockStart, contextStack, newList);
             contextStack.Pop();
          }
          lastPart = blockStart.BlockEnd;

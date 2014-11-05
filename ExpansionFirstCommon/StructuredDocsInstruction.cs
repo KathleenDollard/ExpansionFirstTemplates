@@ -19,31 +19,29 @@ namespace ExpansionFirst.Common
       }
    }
 
-   public class AddStructuredDocsInstruction : IInstruction
+   public class AddStructuredDocsInstruction : InstructionBase 
    {
-      private InstructionHelper helper = new InstructionHelper();
+      private const string id = "StructuredDocs";
 
-      public string Id
-      { get { return "StructuredDocs"; } }
+      public AddStructuredDocsInstruction() : base(id) { }
 
-      public bool DoInstruction(IDom part,
-                   MetadataContextStack contextStack,
-                   List<IDom> retList,
-                   ref IDom lastPart,
-                   ref bool reRootTemplate)
+      public override bool BeforeCopy(IDom sharedPart, 
+                  MetadataContextStack contextStack, 
+                  List<IDom> retList, 
+                  ref IDom lastPart)
       {
          // always return false, even if this does somethign, it doesn't take care of the underlying part
-         var candidates = helper.GetMatchingAttributes(part, Id);
+         var candidates = Helper.GetMatchingAttributes(sharedPart, Id);
          foreach (var attribute in candidates)
          {
-            if (HandleAttribute(attribute, part as IHasAttributes, contextStack, retList, ref lastPart)) return false;
+            if (HandleAttribute(attribute, sharedPart as IHasAttributes, contextStack, retList, ref lastPart)) return false;
          }
          return false;
       }
 
       private bool HandleAttribute(IAttribute attribute, IHasAttributes item, MetadataContextStack contextStack, List<IDom> newList, ref IDom lastPart)
       {
-         var value = helper.GetBestMetadata<CodeFirstMetadata>(attribute, contextStack);
+         var value = Helper.GetBestMetadata<CodeFirstMetadata>(attribute, contextStack);
          var targetHasStructuredDocs = item as IHasStructuredDocumentation;
          if (value != null && targetHasStructuredDocs != null && !string.IsNullOrWhiteSpace(value.XmlCommentString))
          {
