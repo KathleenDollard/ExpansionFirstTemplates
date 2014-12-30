@@ -19,11 +19,11 @@ namespace ExpansionFirst.Common
       }
    }
 
-   public class AddStructuredDocsInstruction : InstructionBase 
+   public class StructuredDocsInstruction : InstructionBase 
    {
       private const string id = "StructuredDocs";
 
-      public AddStructuredDocsInstruction() : base(id) { }
+      public StructuredDocsInstruction() : base(id) { }
 
       public override bool BeforeCopy(IDom sharedPart, 
                   MetadataContextStack contextStack, 

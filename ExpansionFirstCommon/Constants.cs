@@ -10,7 +10,6 @@ namespace ExpansionFirst.Common
    {
       public const string Prefix = "_xf_";
       public const string ExpansionFirstRunner = "ExpansionFirst";
-      public const string IsInOutsideTemplateRunner = "IsInOutsideTemplate";
       public const string Metadata = "Meta"; // This is widely used in templates and should not be changed. If you hate the semantics, add another. 
 
       public const string FormatCamelCase = "CamelCase";

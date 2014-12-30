@@ -12,51 +12,79 @@ namespace ExpansionFirst.Common
       private IRoot templateRoot;
       private List<IInstruction> availableInstructions = new List<IInstruction>();
       private ReplacementAlteration replacementAlteration = new ReplacementAlteration();
+      private MetadataContextStack contextStack = new MetadataContextStack();
+      private InstructionHelper helper = new InstructionHelper();
 
+      /// <summary>
+      /// 
+      /// </summary>
+      /// <param name="templateRoot"></param>
+      /// <remarks>
+      /// Currently each expnasion first class wraps a single template and templates are 
+      /// naked RoslynDom trees. Expect this to change because it templates need conditionals
+      /// attached, and it's not clear that this runner should interface, surface decisions
+      /// regarding that conditionals. Also, it should not be up to an external client
+      /// to loop through multiple metadata sets - each call to run is one metadata set. 
+      /// And in case you weren't already convinced this is a bad place for a complex 
+      /// dependency, someone needs to manage file boundaries for file based geenration and
+      /// fragment based for fragment based generation. 
+      /// </remarks>
       public ExpansionFirstTemplate(IRoot templateRoot)
       {
          this.templateRoot = templateRoot;
+         Initialize();
       }
 
       private void Initialize()
       {
+         // TODO: Instructions will be DI. Probably, a bootstrapper instruction here will set up the container, because I want complete independence from who/where/why this system/DLL is used
+         // TODO: There si a set of expected instructions, and a priority system to override these is needed. Possibly based on ID and a well known enum creating id strings
          availableInstructions.Add(new SetVariableInstruction());
          availableInstructions.Add(new ForEachInstruction());
-         availableInstructions.Add(new AddStructuredDocsInstruction());
+         availableInstructions.Add(new StructuredDocsInstruction());
          availableInstructions.Add(new AttributesInstruction());
          availableInstructions.Add(new TemplateStartInstruction());
+
+         DoRunInitialize();
       }
+
+      public void RunComplete()
+      { DoSomeInstruction((ins, cs) => ins.RunComplete(cs)); }
 
       public IEnumerable<IRoot> Run<TMetadata>(TMetadata metadata)
       {
-         Initialize();
-         var contextStack = new MetadataContextStack();
          contextStack.Push(Constants.Metadata, metadata);
-         contextStack.Add(Constants.IsInOutsideTemplateRunner, true);
          contextStack.Add(Constants.ExpansionFirstRunner, this);
+         var thisRoot = templateRoot.Copy();
+         DoTemplateStart(thisRoot);
          IDom nextPart = null;
-         return Update(templateRoot, contextStack, ref nextPart).Cast<IRoot>();
-         // don't bother popping the metadata stack, because we're done and at the top
+         var retList = Update(thisRoot, contextStack, ref nextPart).Cast<IRoot>();
+         DoTemplateComplete(thisRoot);
+         contextStack.Pop();
+         return retList;
       }
 
       internal IEnumerable<IDom> Update(IDom part, MetadataContextStack contextStack, ref IDom lastPart)
       {
-         var newMemberList = new List<IDom>();
+         var newItem = helper.Copy<IDom>(part);
 
-         var method = part.GetType().GetMethod("Copy");
-         var newItem = method.Invoke(part, null) as IDom;
-
-         bool reRoot = false;
-         if (DoInstruction(part, contextStack, newMemberList, ref lastPart, ref reRoot))
+         // Returning true from DoInstruction means the part is fully handled and no more should be done
          {
-            return newMemberList.OfType<IDom>();
+            var newMemberList = new List<IDom>();
+            if (DoInstruction(part, contextStack, newMemberList, ref lastPart))
+            {
+               return newMemberList.OfType<IDom>();
+            }
          }
 
+         // TODO: I'm not convinced there are three actions, it may be 3 instructions. 
          DoReplacements(newItem, contextStack);
+         DoAfterCopy(newItem);
          HandleAttributes(newItem as IHasAttributes, contextStack);
 
+         // Manage children. Property has a special case of multiple children. Events may be the same. 
          UpdateProperty(contextStack, newItem as IProperty);
-         UpdateContainer(contextStack, newMemberList, newItem as IContainer);
+         UpdateContainer(contextStack, newItem as IContainer);
 
          return new IDom[] { newItem };
       }
@@ -72,12 +100,13 @@ namespace ExpansionFirst.Common
          }
       }
 
-      private void UpdateContainer(MetadataContextStack contextStack, List<IDom> newMemberList, IContainer newContainer)
+      private void UpdateContainer(MetadataContextStack contextStack, IContainer newContainer)
       {
          if (newContainer != null)
          {
             var member = newContainer.GetMembers().FirstOrDefault();
             var i = 0;
+            var newMemberList = new List<IDom>();
             while (member != null)
             {
                i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
@@ -110,8 +139,6 @@ namespace ExpansionFirst.Common
          foreach (var newMember in ret)
          { newPartAsContainer.AddOrMoveMember(newMember); }
       }
-
-
 
       //public IEnumerable<IDom> InternalRun<T>(T part, MetadataContextStack contextStack, ref IDom nextPart)
       //    where T : IDom
@@ -198,14 +225,12 @@ namespace ExpansionFirst.Common
 
 
       private bool DoInstruction(IDom part, MetadataContextStack contextStack, List<IDom> retList,
-                                    ref IDom lastPart, ref bool reRootTemplate)
+                                    ref IDom lastPart)
       {
-         //var publicAnnotation = part as IPublicAnnotation;
-         //if (publicAnnotation == null) return false;
+         // Can't use DoSomeInstruction becuase you can't pass ref to a lambda
          foreach (var instruction in availableInstructions)
          {
-            bool reRoot = false;
-            if (instruction.BeforeCopy (part, contextStack, retList, ref lastPart))
+            if (instruction.BeforeCopy(part, contextStack, retList, ref lastPart))
             { return true; }
          }
          return false;
@@ -216,6 +241,26 @@ namespace ExpansionFirst.Common
       {
          replacementAlteration.DoAlteration(newItem, metaContextStack);
          // TODO: Do Replacements
+      }
+
+      private void DoRunInitialize()
+      { DoSomeInstruction((ins, cs) => ins.RunInitialize(cs)); }
+
+      private void DoTemplateStart(IRoot sharedRoot)
+      { DoSomeInstruction((ins, cs) => ins.TemplateStart(sharedRoot, cs)); }
+
+      private void DoTemplateComplete(IRoot sharedRoot)
+      { DoSomeInstruction((ins, cs) => ins.TemplateDone(sharedRoot, cs)); }
+
+      private void DoAfterCopy(IDom newPart)
+      { DoSomeInstruction((ins, cs) => ins.AfterCopy(newPart, cs)); }
+
+      private void DoSomeInstruction(Action<IInstruction, MetadataContextStack> instructionPartDelegate)
+      {
+         foreach (var instruction in availableInstructions)
+         {
+            instructionPartDelegate(instruction, contextStack);
+         }
       }
    }
 }

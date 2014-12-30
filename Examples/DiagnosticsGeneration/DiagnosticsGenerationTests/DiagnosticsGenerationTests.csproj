@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{21D5A140-1FD3-4C7D-9A7D-A9DEEE8CDE85}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DiagnosticsGenerationTests</RootNamespace>
+    <AssemblyName>DiagnosticsGenerationTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CodeFirstCSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstCSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeFirstMetadata, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeFirstMetadataCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstMetadataCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeFirstMetadataProvider, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstMetadataProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeFirstMetadataT4Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstMetadataT4Support.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeFirstTemplateSupport, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.16-alpha\lib\net45\CodeFirstTemplateSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.Common.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.CSharp.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.CSharp.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.CSharp.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.Common.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=3.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Unity.3.5.1405-prerelease\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=3.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Unity.3.5.1405-prerelease\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=3.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Unity.3.5.1405-prerelease\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="RoslynDom, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\RoslynDom.1.0.30-alpha\lib\net45\RoslynDom.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\RoslynDomCSharpFactories.1.0.30-alpha\lib\net45\RoslynDomCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynDomCSharpFactories, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\RoslynDomCSharpFactories.1.0.30-alpha\lib\net45\RoslynDomCSharpFactories.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynDomRDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\RoslynDomCSharpFactories.1.0.30-alpha\lib\net45\RoslynDomRDomCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynDomUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\RoslynDomCSharpFactories.1.0.30-alpha\lib\net45\RoslynDomUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.32.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\..\packages\System.Collections.Immutable.1.1.32-beta\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata, Version=1.0.17.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Reflection.Metadata.1.0.17-beta\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DiagnosticGenerationTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ExpansionFirstCommon\ExpansionFirstCommon.csproj">
+      <Project>{e27e52df-d269-48b2-a8cf-40d1e0ab0424}</Project>
+      <Name>ExpansionFirstCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ExpansionFirstTemplates\ExpansionFirstTemplates.csproj">
+      <Project>{4ccf74f8-0360-42c4-970a-bc1c48edc5a2}</Project>
+      <Name>ExpansionFirstTemplates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiagnosticsGenerationMetadata\DiagnosticsGenerationMetadata.csproj">
+      <Project>{8d008cec-481e-42c1-9d26-8d7bd0e3245e}</Project>
+      <Name>DiagnosticsGenerationMetadata</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiagnosticsGenerationSupport\DiagnosticsGenerationSupport.csproj">
+      <Project>{98823e43-085e-443c-bdfa-4c2cf965737e}</Project>
+      <Name>DiagnosticsGenerationSupport</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

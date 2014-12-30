@@ -16,6 +16,16 @@ namespace ExpansionFirst.Common
 
       /* New Interface: Notes to self
 
+         OPEN DESIGN QUESTION: Should all instruction parts return true to block further 
+         instructions? This is necessary in BeforeCopy, but isn't necessary elsewhere
+
+         OPEN DESIGN QUESTION: Should the template be copied, prior to metadata step, in 
+         order to allow a two pass generation - self modifying templates. It is naturally 
+         supported for configuration based changes that affect all runs of the template. 
+         What isn't currently supported (in ExpansionFirstTemplate) is copying the template 
+         on each TemplateRun. My gut is that is appropriate, but I can't yet find the scenario. 
+         RESOLOVED: Copying is just so easy, I'm doing it. 
+
          I contemplated separate interfaces for each type, but the recognition the instruction 
          is a match will be common to all, and I think it will be quite confusing to have 
          intialization for an instruction separate from how it is used. This does mean that
@@ -96,8 +106,7 @@ namespace ExpansionFirst.Common
       /// </example>
       void AfterCopy(
                   IDom newPart,
-                  MetadataContextStack contextStack,
-                  List<IDom> retList);
+                  MetadataContextStack contextStack);
 
       /// <summary>
       /// Called before any processing. Can be used to alter the root, although it is most commonly
@@ -131,7 +140,7 @@ namespace ExpansionFirst.Common
       /// gunk you require. This instruction is not processed until Finalization, and then simply
       /// throws away anything that appears before or after the TemplateStart block. 
       /// </example>
-      void TemplateEnd(IRoot newRoot,
+      void TemplateDone(IRoot newRoot,
                   MetadataContextStack contextStack);
 
       /// <summary>
@@ -145,7 +154,7 @@ namespace ExpansionFirst.Common
       /// additional services for templates. Services are provided via the contextStack, since it is needed
       /// for variables. Thus services for this project are called helpers or support. 
       /// </example>
-      void RunStart(MetadataContextStack contextStack);
+      void RunInitialize(MetadataContextStack contextStack);
 
       /// <summary>
       /// The final method called. Intended as an opportunity to clean up any expensive resources and do 
@@ -155,7 +164,7 @@ namespace ExpansionFirst.Common
       /// <example>
       /// Reporting is tidied up and output to a file. 
       /// </example>
-      void RunEnd(MetadataContextStack contextStack);
+      void RunComplete(MetadataContextStack contextStack);
 
    }
 }

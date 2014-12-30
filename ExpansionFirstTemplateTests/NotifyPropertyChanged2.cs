@@ -10,7 +10,7 @@
       #region [[ _xf_ForEach(LoopOver="Meta.Classes", VarName="Class") ]]
       namespace _xf_Class_dot_Namespace
       {
-         [_xf_.Attributes]
+         [_xf_.StructuredDocs(_xf_Class)]
          public sealed partial class _xf_Class_dot_Name : INotifyPropertyChanged
          {
             // Instruction exercise
@@ -21,7 +21,6 @@
             public event PropertyChangedEventHandler PropertyChanged;
             #region [[ _xf_ForEach(LoopOver="Class.Properties", VarName="Property") ]]
 
-            // Property name/field name: _xf_Property_dot_Name / _xf_Property_dot_Name_as_CamelCase
             private _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name_as_CamelCase;
             public _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name
             {

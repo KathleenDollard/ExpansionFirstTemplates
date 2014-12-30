@@ -62,8 +62,8 @@ namespace ExpansionFirst.Common
          object value = null;
          if (declaration.Initializer != null)
          {
-            // TODO: Allow evaluating expressions in the following
-            value = declaration.Initializer.Expression.ToString();
+            // TODO: Allow evaluating expressions in the following using the current language
+            value = declaration.Initializer.InitialExpressionString.ToString();
          }
          PushToContext(contextStack, name, value);
          //contextStack.Current.AddValue(name, value);
@@ -81,7 +81,7 @@ namespace ExpansionFirst.Common
          if (field.Initializer != null)
          {
             // TODO: Allow evaluating expressions in the following
-            value = field.Initializer.Expression.ToString();
+            value = field.Initializer.InitialExpressionString.ToString();
          }
          PushToContext(contextStack, name, value);
          //contextStack.Current.AddValue(name, value);

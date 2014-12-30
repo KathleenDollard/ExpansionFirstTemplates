@@ -17,7 +17,7 @@ namespace ExpansionFirst.Common
 
       public TemplateStartInstruction() : base(id) { }
 
-      public override void TemplateEnd(IRoot newRoot, MetadataContextStack contextStack)
+      public override void TemplateDone(IRoot newRoot, MetadataContextStack contextStack)
       {
          var blockStart = newRoot
                            .Descendants
@@ -27,10 +27,13 @@ namespace ExpansionFirst.Common
          if (blockStart == null) return ;
 
          var blockContents = blockStart.BlockContents;
-         var blockContentsAsStemMembers = blockContents.OfType<IStemMemberAndDetail>();
+         var blockContentsAsStemMembers = blockContents
+                        .OfType<IStemMemberAndDetail>()
+                        .Select(x=>Helper.Copy<IDom>(x));
          if (blockContents.Count() != blockContentsAsStemMembers.Count()) throw new InvalidOperationException();
          newRoot.StemMembersAll.Clear();
-         newRoot.StemMembersAll.AddOrMoveRange(blockContentsAsStemMembers);
+         newRoot.StemMembersAll
+               .AddOrMoveRange(blockContentsAsStemMembers.OfType<IStemMemberAndDetail>());
       }
    }
 }

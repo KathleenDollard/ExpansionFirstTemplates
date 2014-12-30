@@ -61,15 +61,16 @@ namespace ExpansionFirst.Common
          if (str != startString) textProp.SetValue(item, str);
       }
 
-       private void ReplaceInExpressions(IDom item, MetadataContextStack contextStack, IEnumerable<PropertyInfo> props)
+      private void ReplaceInExpressions(IDom item, MetadataContextStack contextStack, IEnumerable<PropertyInfo> props)
       {
          var filteredProps = props.Where(x => typeof(IExpression).IsAssignableFrom(x.PropertyType));
          foreach (var prop in filteredProps)
          {
             var expr = prop.GetValue(item) as IExpression;
             if (expr == null) return; // underlying value might be null
-            var str = ReplacementInsideString(expr.Expression, contextStack);
-            if (str != expr.Expression) expr.Expression = str;
+            // TODO: Allow evaluating expressions in the following using the current language
+            var str = ReplacementInsideString(expr.InitialExpressionString, contextStack);
+            if (str != expr.InitialExpressionString) expr.InitialExpressionString = str;
          }
          return;
       }
@@ -140,16 +141,16 @@ namespace ExpansionFirst.Common
       {
          switch (format)
          {
-            case Constants.FormatCamelCase:
-               return char.ToLower(input[0]) + input.Substring(1);
-            case Constants.FormatUpperCase:
-               return input.ToUpper();
-            case Constants.FormatLowerCase:
-               return input.ToLower();
-            case Constants.FormatPascalCase:
-               return char.ToUpper(input[0]) + input.Substring(1);
-            default:
-               return input;
+         case Constants.FormatCamelCase:
+            return char.ToLower(input[0]) + input.Substring(1);
+         case Constants.FormatUpperCase:
+            return input.ToUpper();
+         case Constants.FormatLowerCase:
+            return input.ToLower();
+         case Constants.FormatPascalCase:
+            return char.ToUpper(input[0]) + input.Substring(1);
+         default:
+            return input;
          }
       }
    }

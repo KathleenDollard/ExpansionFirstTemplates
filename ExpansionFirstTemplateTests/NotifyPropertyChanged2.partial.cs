@@ -12,6 +12,7 @@ namespace ExpansionFirstTemplateTests.NotifyPropertyChanged2
       /// </summary>
       public partial class _xf_Class_dot_Name
       {
+        const string _xf_Class = null;
          public class _xf_Property_dot_PropertyType_dot_Name { }
          private void SetProperty(ref _xf_Property_dot_PropertyType_dot_Name _xf_Camel_Property_dot_Name, _xf_Property_dot_PropertyType_dot_Name value) { }
       }

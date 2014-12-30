@@ -101,5 +101,14 @@ namespace ExpansionFirst.Common
 
       public string MakeMarker(string id)
       { return Constants.Prefix + id; }
+
+      public T Copy<T>(IDom part)
+         where T : class
+      {
+         // Copy is an IDom<T> method, and I only have the part as an IDom, thus reflection
+         var method = part.GetType().GetMethod("Copy");
+         var newItem = method.Invoke(part, null) as T;
+         return newItem;
+      }
    }
 }

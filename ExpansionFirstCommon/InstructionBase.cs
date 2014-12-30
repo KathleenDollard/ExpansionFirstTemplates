@@ -20,15 +20,15 @@ namespace ExpansionFirst.Common
       public string Id
       { get { return id; } }
 
-      public virtual void RunStart(MetadataContextStack contextStack) { }
-      public virtual void RunEnd(MetadataContextStack contextStack) { }
+      public virtual void RunInitialize(MetadataContextStack contextStack) { }
+      public virtual void RunComplete(MetadataContextStack contextStack) { }
 
       public virtual void TemplateStart(IRoot sharedRoot, MetadataContextStack contextStack) { }
-      public virtual void TemplateEnd(IRoot newRoot, MetadataContextStack contextStack) { }
+      public virtual void TemplateDone(IRoot newRoot, MetadataContextStack contextStack) { }
 
       public virtual bool BeforeCopy(IDom sharedPart, MetadataContextStack contextStack, List<IDom> retList, ref IDom lastPart)
       { return false; }
-      public virtual void AfterCopy(IDom newPart, MetadataContextStack contextStack, List<IDom> retList) { }
+      public virtual void AfterCopy(IDom newPart, MetadataContextStack contextStack) { }
 
       protected InstructionHelper Helper
       { get { return helper; } }

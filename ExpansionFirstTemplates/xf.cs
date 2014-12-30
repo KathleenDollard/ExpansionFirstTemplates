@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace ExpansionFirst.TemplateSupport
 {
-   //public partial class _xf_
-   //{
-   //     public class OutputWithoutPartial : Attribute
-   //   {
-   //      public OutputWithoutPartial()
-   //      { }
-   //      public OutputWithoutPartial(bool withoutPartial)
-   //      { WithoutPartial = withoutPartial; }
+   public partial class _xf_
+   {
+      public class OutputWithoutPartial : Attribute
+      {
+         public OutputWithoutPartial()
+         { }
+         public OutputWithoutPartial(bool withoutPartial)
+         { WithoutPartial = withoutPartial; }
 
-   //      public bool WithoutPartial { get; private set; }
-   //   }
+         public bool WithoutPartial { get; private set; }
+      }
 
-   //}
+   }
 }

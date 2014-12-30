@@ -29,15 +29,27 @@ namespace ExpansionFirstExample
 
 }";
 
+      /// <summary>
+      /// 
+      /// </summary>
       private string propChangedAttributeIdentifier = "NotifyPropertyChanged";
       private string propChangedMetadataSource = @"
 namespace ExpansionFirstExample
 {
+    /// <summary>
+    /// This is the class
+    /// </summary>
     [NotifyPropertyChanged]
     public class Customer
     {
+        /// <summary>
+        /// This is the first name
+        /// </summary>
         public string FirstName{get; set;}
+
+        [TestAttribute]
         public string LastName{get; set;}
+
         public int  Id{get; set;}
         public DateTime  BirthDate{get; set;}
     }
