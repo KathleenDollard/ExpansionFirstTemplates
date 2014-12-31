@@ -17,23 +17,27 @@ namespace ExpansionFirst.Common
 
       public TemplateStartInstruction() : base(id) { }
 
-      public override void TemplateDone(IRoot newRoot, MetadataContextStack contextStack)
+      public override void TemplateDone(IRoot sharedRoot, MetadataContextStack contextStack,
+                  IEnumerable<IRoot> retList)
       {
-         var blockStart = newRoot
-                           .Descendants
-                           .OfType<IDetailBlockStart>()
-                           .Where(x => x.Text.Contains(Helper.MakeMarker(id)))
-                           .FirstOrDefault();
-         if (blockStart == null) return ;
+         foreach (var newRoot in retList)
+         {
+            var blockStart = newRoot
+                              .Descendants
+                              .OfType<IDetailBlockStart>()
+                              .Where(x => x.Text.Contains(Helper.MakeMarker(id)))
+                              .FirstOrDefault();
+            if (blockStart == null) return;
 
-         var blockContents = blockStart.BlockContents;
-         var blockContentsAsStemMembers = blockContents
-                        .OfType<IStemMemberAndDetail>()
-                        .Select(x=>Helper.Copy<IDom>(x));
-         if (blockContents.Count() != blockContentsAsStemMembers.Count()) throw new InvalidOperationException();
-         newRoot.StemMembersAll.Clear();
-         newRoot.StemMembersAll
-               .AddOrMoveRange(blockContentsAsStemMembers.OfType<IStemMemberAndDetail>());
+            var blockContents = blockStart.BlockContents;
+            var blockContentsAsStemMembers = blockContents
+                           .OfType<IStemMemberAndDetail>()
+                           .Select(x => Helper.Copy<IDom>(x));
+            if (blockContents.Count() != blockContentsAsStemMembers.Count()) throw new InvalidOperationException();
+            newRoot.StemMembersAll.Clear();
+            newRoot.StemMembersAll
+                  .AddOrMoveRange(blockContentsAsStemMembers.OfType<IStemMemberAndDetail>());
+         }
       }
    }
 }

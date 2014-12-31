@@ -79,12 +79,21 @@ namespace ExpansionFirst.Common
       {
          var ret = input;
          var matches = matchRegEx.Matches(input);
+         var replacements = new List<Tuple<int, int, string>>();
          for (int i = 0; i < matches.Count; i++)
          {
             var match = matches[i];
             var str = match.Value;
             var newStr = GetNewString(str, contextStack, match);
-            if (newStr != str) ret = ret.Replace(str, newStr);
+            replacements.Add(Tuple.Create(match.Index, match.Length, newStr));
+            //if (newStr != str) ret = ret.Replace(str, newStr);
+         }
+          replacements.Reverse();
+         foreach(var replacement in replacements )
+         {
+            var start = ret.Substring(0, replacement.Item1);
+            var end = ret.Substring(replacement.Item1 + replacement.Item2);
+            ret = start + replacement.Item3 + end;
          }
          return ret;
       }

@@ -1,4 +1,4 @@
-﻿namespace ExpansionFirstTemplatesTests
+﻿namespace ExpansionFirstTemplatesTests.SuperSimpleClassTemplate
 {
    /// <summary>
    /// This partial contains any symobols that should be recognized by the template. 

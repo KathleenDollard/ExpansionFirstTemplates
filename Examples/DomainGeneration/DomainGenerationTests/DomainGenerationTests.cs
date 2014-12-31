@@ -8,6 +8,8 @@ using RoslynDom;
 using RoslynDom.CSharp;
 using CodeFirst.Provider;
 using ExpansionFirstTemplates;
+using System;
+using Microsoft.CodeAnalysis.MSBuild;
 
 namespace DomainGenerationTests
 {
@@ -18,6 +20,7 @@ namespace DomainGenerationTests
       public class SimpleSemanticLogTemplateTests
       {
          private string superSimpleTemplateName = @"..\..\..\DomainGenerationTemplates\SuperSimpleClassTemplate.cs";
+         private string propertyChangedTemplateName = @"..\..\..\DomainGenerationTemplates\PropertyChangedTemplate.cs";
 
 
          /// <summary>
@@ -46,7 +49,7 @@ namespace ExpansionFirstExample
     }
 }";
 
- 
+
          [TestMethod]
          public void DomainGeneration_can_load_metadata()
          {
@@ -70,111 +73,135 @@ namespace ExpansionFirstExample
             var provider = new ServiceProvider();
             var template = File.ReadAllText(superSimpleTemplateName);
             var xfTemplate = ExpansionFirstCSharp.Load(template);
+            Assert.IsNotNull(xfTemplate);
+
+            var metadataLoader = provider.GetMetadataLoader<CodeFirstClassGroup>();
+            var metadata = metadataLoader.LoadFromString(propChangedMetadataSource, "");
+            Assert.IsNotNull(metadata);
+
+            var newRoots = xfTemplate.Run(metadata);
+            var newRDomRoot = newRoots.First() as RDomRoot;
+            var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
+            var output = outputSyntax.ToString();
+            var expected = "namespace ExpansionFirstTemplatesTests.SuperSimpleClassTemplate\r\n{\r\n   namespace ExpansionFirstExample\r\n   {\r\n      public sealed class Customer\r\n      { }\r\n   }\r\n}\r\n";
+            Assert.AreEqual(expected, output);
+         }
+
+         [TestMethod]
+         public void DomainGeneration_excludes_code_outside_start_block()
+         {
+            var template = @"
+namespace ExpansionFirstTemplatesTests.PropertyChangedTemplate
+{
+   #region [[ _xf_TemplateStart() ]]
+   using System;
+   using System.ComponentModel;
+
+   #region [[ _xf_ForEach(LoopOver=""Meta.Classes"", VarName=""Class"") ]]
+   namespace _xf_Class_dot_Namespace
+   {
+      public sealed partial class _xf_Class_dot_Name
+      { }
+   }
+#endregion
+#endregion
+}";
+            var provider = new ServiceProvider();
+            var xfTemplate = ExpansionFirstCSharp.Load(template);
+            Assert.IsNotNull(xfTemplate);
+
+            var metadataLoader = provider.GetMetadataLoader<CodeFirstClassGroup>();
+            var metadata = metadataLoader.LoadFromString(propChangedMetadataSource, "");
+            Assert.IsNotNull(metadata);
+
+            var newRoots = xfTemplate.Run(metadata);
+            var newRDomRoot = newRoots.First() as RDomRoot;
+            var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
+            var output = outputSyntax.ToString();
+            var expected = "using System;\r\n   using System.ComponentModel;\r\n\r\n   namespace ExpansionFirstExample\r\n   {\r\n      public sealed class Customer\r\n      { }\r\n   }\r\n";
+            Assert.AreEqual(expected, output);
+         }
+
+         [TestMethod]
+         public void DomainGeneration_can_handle_nested_ForEach()
+         {
+            var template = @"
+namespace ExpansionFirstTemplatesTests.PropertyChangedTemplate
+{
+   #region [[ _xf_TemplateStart() ]]
+   using System;
+   using System.ComponentModel;
+
+   #region [[ _xf_ForEach(LoopOver=""Meta.Classes"", VarName=""Class"") ]]
+   namespace _xf_Class_dot_Namespace
+   {
+      public sealed partial class _xf_Class_dot_Name : INotifyPropertyChanged
+      {
+         public event PropertyChangedEventHandler PropertyChanged;
+         #region [[ _xf_ForEach(LoopOver=""Class.Properties"", VarName=""Property"") ]]
+
+         // Class name: _xf_Class_dot_Name / _xf_Class_dot_Name_as_CamelCase
+         // Field/Property name: _xf_Property_dot_Name_as_CamelCase/_xf_Property_dot_Name 
+         private _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name_as_CamelCase;
+         public _xf_Property_dot_PropertyType_dot_Name _xf_Property_dot_Name
+         {
+            get { return _xf_Property_dot_Name_as_CamelCase; }
+            set { SetProperty(ref _xf_Property_dot_Name_as_CamelCase, value); }
+         }
+         #endregion
+      }
+   }
+   #endregion
+   #endregion
+}";
+            var provider = new ServiceProvider();
+            var xfTemplate = ExpansionFirstCSharp.Load(template);
+            Assert.IsNotNull(xfTemplate);
+
+            var metadataLoader = provider.GetMetadataLoader<CodeFirstClassGroup>();
+            var metadata = metadataLoader.LoadFromString(propChangedMetadataSource, "");
+            Assert.IsNotNull(metadata);
+
+            var newRoots = xfTemplate.Run(metadata);
+            var newRDomRoot = newRoots.First() as RDomRoot;
+            var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
+            var output = outputSyntax.ToString();
+            var expected = "using System;\r\n   using System.ComponentModel;\r\n\r\n   namespace ExpansionFirstExample\r\n   {\r\n      public sealed class Customer : INotifyPropertyChanged\r\n      {\r\n         public event PropertyChangedEventHandler PropertyChanged;\r\n\r\n         // Class name: Customer / customer\r\n         // Field/Property name: firstName/FirstName \r\n         private String firstName;\r\n         public String FirstName\r\n         {\r\n            get { return firstName; }\r\n            set { SetProperty(ref firstName, value); }\r\n         }\r\n\r\n         // Class name: Customer / customer\r\n         // Field/Property name: lastName/LastName \r\n         private String lastName;\r\n         public String LastName\r\n         {\r\n            get { return lastName; }\r\n            set { SetProperty(ref lastName, value); }\r\n         }\r\n\r\n         // Class name: Customer / customer\r\n         // Field/Property name: id/Id \r\n         private Int32 id;\r\n         public Int32 Id\r\n         {\r\n            get { return id; }\r\n            set { SetProperty(ref id, value); }\r\n         }\r\n\r\n         // Class name: Customer / customer\r\n         // Field/Property name: birthDate/BirthDate \r\n         private DateTime birthDate;\r\n         public DateTime BirthDate\r\n         {\r\n            get { return birthDate; }\r\n            set { SetProperty(ref birthDate, value); }\r\n         }\r\n      }\r\n   }\r\n";
+            Assert.AreEqual(expected, output);
+         }
+
+         [TestMethod]
+         public void DomainGeneration_creates_correct_output_for_NotifyPropertyChanged()
+         {
+            var provider = new ServiceProvider();
+            var template = File.ReadAllText(propertyChangedTemplateName);
+            var xfTemplate = ExpansionFirstCSharp.Load(template);
+            Assert.IsNotNull(xfTemplate);
+
             var metadataLoader = provider.GetMetadataLoader<CodeFirstClassGroup>();
             var metadata = metadataLoader.LoadFromString(propChangedMetadataSource, "");
             var newRoots = xfTemplate.Run(metadata);
             var newRDomRoot = newRoots.First() as RDomRoot;
             var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
             var output = outputSyntax.ToString();
-            var expected = "namespace ExpansionFirstTemplatesTests\r\n{\r\n   namespace ExpansionFirstExample\r\n   {\r\n      public sealed class Customer\r\n      { }\r\n   }\r\n}\r\n";
+            var expected = "using System;\r\n   using System.ComponentModel;\r\n\r\n   namespace ExpansionFirstExample\r\n   {\r\n      public sealed class Customer : INotifyPropertyChanged\r\n      {\r\n         public event PropertyChangedEventHandler PropertyChanged;\r\n\r\n         private String firstName;\r\n         public String FirstName\r\n         {\r\n            get { return firstName; }\r\n            set { SetProperty(ref firstName, value); }\r\n         }\r\n\r\n         private String lastName;\r\n         public String LastName\r\n         {\r\n            get { return lastName; }\r\n            set { SetProperty(ref lastName, value); }\r\n         }\r\n\r\n         private Int32 id;\r\n         public Int32 Id\r\n         {\r\n            get { return id; }\r\n            set { SetProperty(ref id, value); }\r\n         }\r\n\r\n         private DateTime birthDate;\r\n         public DateTime BirthDate\r\n         {\r\n            get { return birthDate; }\r\n            set { SetProperty(ref birthDate, value); }\r\n         }\r\n      }\r\n   }\r\n";
             Assert.AreEqual(expected, output);
          }
 
-         //[TestMethod]
-         //public void Can_load_NotifyPropertyChanged_metadata()
-         //{
-         //   var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
-         //   CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);
-         //   Assert.IsNotNull(metadata);
-         //}
-
-
-         //[TestMethod]
-         //public void Can_get_NotifyPropertyChanged_output()
-         //{
-         //   var csharpCode = File.ReadAllText(@"..\..\NotifyPropertyChanged.cs");
-         //   var root = RDom.CSharp.Load(csharpCode);
-         //   var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
-         //   //Assert.AreEqual(csharpCode, verify);
-
-         //   TestCodeFirstClassGroup(@"..\..\NotifyPropertyChanged.cs");
-         //}
-
-         //[TestMethod]
-         //public void Can_get_NotifyPropertyChanged2_output()
-         //{
-         //   TestCodeFirstClassGroup(@"..\..\NotifyPropertyChanged2.cs");
-         //}
-
-         //private void TestCodeFirstClassGroup(string templateFileName)
-         //{
-         //   var xfTemplate = ExpansionFirstCSharp.LoadFromFile(templateFileName);
-         //   var metadataLoader = new CodeFirstMetadataLoader<CodeFirstClassGroup>();
-         //   CodeFirstClassGroup metadata = metadataLoader.LoadFromString(propChangedMetadataSource, propChangedAttributeIdentifier);
-         //   var newRoots = xfTemplate.Run(metadata);
-         //   var newRDomRoot = newRoots.First() as RDomRoot;
-         //   var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
-         //   var output = outputSyntax.ToFullString();
-         //   output = CleanOutput(output);
-         //   Assert.Inconclusive();
-         //}
-
-         // TODO: Fix this ugly aftermarket hack
-         private string CleanOutput(string output)
+         [TestMethod]
+         public void Should_create_domain_file_from_project()
          {
-            output = output.SubstringAfter("_xf_TemplateStart()");
-            output = output.SubstringAfter("\r\n");
-            output = output.SubstringBeforeLast("#endregion");
-            output = output.SubstringBeforeLast("\r\n");
-            return output;
+            var runner = new ExpansionFirstCSharpRunner();
+            var startDirectory = Path.Combine(FileSupport.ProjectPath(AppDomain.CurrentDomain.BaseDirectory), 
+                                 "..\\DomainGenerationMetadata");
+            startDirectory = Path.GetFullPath(startDirectory);
+            var ws = MSBuildWorkspace.Create();
+            var projectPath = FileSupport.GetNearestCSharpProject(startDirectory);
+            // For testing: wait for the result
+            var project = ws.OpenProjectAsync(projectPath).Result;
+            var dict = runner.CreateOutputStringsFromProject(project, "..\\Output");
+            AssertCreation(dict);
          }
-
-//         [TestMethod]
-//         public void Can_get_super_simple_output()
-//         {
-//            var csharpCode = @"
-//namespace ExpansionFirstTemplateTests
-//{
-
-//      using System.ComponentModel;
-//      using System;
-//      #region _xf_MakeFileForEach(Over=asdf) 
-
-//      namespace _xf_Class_namespaceName
-//      {}
-//      #endregion
-//}
-//";
-//            var root = RDom.CSharp.Load(csharpCode);
-//            var verify = RDom.CSharp.GetSyntaxNode(root).ToFullString();
-//            Assert.AreEqual(csharpCode, verify);
-
-//            var xfTemplate = ExpansionFirstCSharp.Load(csharpCode);
-//            var metadataLoader = new CodeFirstMetadataLoader<CodeFirstSemanticLogGroup>();
-//            CodeFirstSemanticLogGroup metadata = metadataLoader.LoadFromString(logMetadataSource, logAttributeIdentifier);
-//            var newRoots = xfTemplate.Run(metadata);
-
-//            var newRDomRoot = newRoots.First() as RDomRoot;
-//            var outputSyntax = RDom.CSharp.GetSyntaxNode(newRDomRoot);
-//            var output = outputSyntax.ToFullString();
-//            var expected = "\r\nnamespace ExpansionFirstTemplateTests\r\n{\r\n\r\n      using System.ComponentModel;\r\n      using System;\r\n      #region _xf_MakeFileForEach(Over=asdf) \r\n\r\n      namespace _xf_Class_namespaceName\r\n      {}\r\n      #endregion\r\n}\r\n";
-
-//            Assert.AreEqual(expected, output);
-//         }
-
-         //[TestMethod]
-         //public void Should_create_domain_file_from_project()
-         //{
-         //   var runner = new T4TemplateRunner();
-         //   var startDirectory = Path.Combine(FileSupport.ProjectPath(AppDomain.CurrentDomain.BaseDirectory), "..\\DomainGenerationMetadata");
-         //   startDirectory = Path.GetFullPath(startDirectory);
-         //   var ws = MSBuildWorkspace.Create();
-         //   var projectPath = FileSupport.GetNearestCSharpProject(startDirectory);
-         //   // For now: wait for the result
-         //   var project = ws.OpenProjectAsync(projectPath).Result;
-         //   var dict = runner.CreateOutputStringsFromProject(project, "..\\Output");
-         //   AssertCreation(dict);
-         //}
 
          //[TestMethod]
          //public void Should_create_domain_file_from_from_path()
@@ -185,7 +212,6 @@ namespace ExpansionFirstExample
          //   AssertCreation(dict);
          //}
 
-         [TestMethod]
          private void AssertCreation(IDictionary<string, string> dict)
          {
             Assert.AreEqual(2, dict.Count());

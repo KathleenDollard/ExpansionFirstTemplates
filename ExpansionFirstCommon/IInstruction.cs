@@ -140,8 +140,9 @@ namespace ExpansionFirst.Common
       /// gunk you require. This instruction is not processed until Finalization, and then simply
       /// throws away anything that appears before or after the TemplateStart block. 
       /// </example>
-      void TemplateDone(IRoot newRoot,
-                  MetadataContextStack contextStack);
+      void TemplateDone(IRoot sharedRoot,
+                  MetadataContextStack contextStack,
+                  IEnumerable<IRoot> retList);
 
       /// <summary>
       /// Initializes the run. Generally templates are applied sequentially to a series of metadata. 

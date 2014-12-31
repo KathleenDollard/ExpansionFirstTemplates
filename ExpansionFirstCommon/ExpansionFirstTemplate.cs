@@ -59,7 +59,7 @@ namespace ExpansionFirst.Common
          DoTemplateStart(thisRoot);
          IDom nextPart = null;
          var retList = Update(thisRoot, contextStack, ref nextPart).Cast<IRoot>();
-         DoTemplateComplete(thisRoot);
+         DoTemplateComplete(thisRoot, retList);
          contextStack.Pop();
          return retList;
       }
@@ -249,8 +249,8 @@ namespace ExpansionFirst.Common
       private void DoTemplateStart(IRoot sharedRoot)
       { DoSomeInstruction((ins, cs) => ins.TemplateStart(sharedRoot, cs)); }
 
-      private void DoTemplateComplete(IRoot sharedRoot)
-      { DoSomeInstruction((ins, cs) => ins.TemplateDone(sharedRoot, cs)); }
+      private void DoTemplateComplete(IRoot sharedRoot, IEnumerable<IRoot> retList)
+      { DoSomeInstruction((ins, cs) => ins.TemplateDone(sharedRoot, cs, retList)); }
 
       private void DoAfterCopy(IDom newPart)
       { DoSomeInstruction((ins, cs) => ins.AfterCopy(newPart, cs)); }

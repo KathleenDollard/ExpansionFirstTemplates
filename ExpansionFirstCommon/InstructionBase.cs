@@ -24,7 +24,7 @@ namespace ExpansionFirst.Common
       public virtual void RunComplete(MetadataContextStack contextStack) { }
 
       public virtual void TemplateStart(IRoot sharedRoot, MetadataContextStack contextStack) { }
-      public virtual void TemplateDone(IRoot newRoot, MetadataContextStack contextStack) { }
+      public virtual void TemplateDone(IRoot sharedRoot, MetadataContextStack contextStack, IEnumerable<IRoot> retList) { }
 
       public virtual bool BeforeCopy(IDom sharedPart, MetadataContextStack contextStack, List<IDom> retList, ref IDom lastPart)
       { return false; }
