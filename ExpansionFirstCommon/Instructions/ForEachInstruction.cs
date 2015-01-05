@@ -41,7 +41,7 @@ namespace ExpansionFirst.Common
 
          var varName = match.Groups[varNameKey].Value;
          var loopOver = match.Groups[loopOverKey].Value;
-         IEnumerable propAsIEnumerable = GetEnumerable(contextStack, loopOver);
+         IEnumerable propAsIEnumerable = GetPropList(contextStack, loopOver);
          var blockContents = blockStart.BlockContents;
          foreach (var item in propAsIEnumerable)
          {
@@ -53,7 +53,7 @@ namespace ExpansionFirst.Common
          return true;
       }
 
-      private static IEnumerable GetEnumerable(MetadataContextStack contextStack, string loopOver)
+      private static IEnumerable GetPropList(MetadataContextStack contextStack, string loopOver)
       {
          // TODO: Work out multi-part naming
          var metaVar = loopOver.SubstringBefore(".");

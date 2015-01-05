@@ -32,27 +32,27 @@
   <ItemGroup>
     <Reference Include="CodeFirstCSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstCSharp.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstCSharp.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstMetadata, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstMetadata.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstMetadataCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstMetadataCommon.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstMetadataCommon.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstMetadataProvider, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstMetadataProvider.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstMetadataProvider.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstMetadataT4Support, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstMetadataT4Support.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstMetadataT4Support.dll</HintPath>
     </Reference>
     <Reference Include="CodeFirstTemplateSupport, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.19-alpha\lib\net45\CodeFirstTemplateSupport.dll</HintPath>
+      <HintPath>..\..\..\packages\CodeFirstMetadata.1.0.23-alpha\lib\net45\CodeFirstTemplateSupport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis">
       <HintPath>..\..\..\packages\Microsoft.CodeAnalysis.Common.1.0.0-beta1-20141031-01\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
@@ -89,19 +89,19 @@
     </Reference>
     <Reference Include="RoslynDom, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\RoslynDom.1.0.32-alpha\lib\net45\RoslynDom.dll</HintPath>
+      <HintPath>..\..\..\packages\RoslynDom.1.0.34-alpha\lib\net45\RoslynDom.dll</HintPath>
     </Reference>
     <Reference Include="RoslynDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\RoslynDom.1.0.32-alpha\lib\net45\RoslynDomCommon.dll</HintPath>
+      <HintPath>..\..\..\packages\RoslynDom.1.0.34-alpha\lib\net45\RoslynDomCommon.dll</HintPath>
     </Reference>
     <Reference Include="RoslynDomRDomCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\RoslynDom.1.0.32-alpha\lib\net45\RoslynDomRDomCommon.dll</HintPath>
+      <HintPath>..\..\..\packages\RoslynDom.1.0.34-alpha\lib\net45\RoslynDomRDomCommon.dll</HintPath>
     </Reference>
     <Reference Include="RoslynDomUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\RoslynDom.1.0.32-alpha\lib\net45\RoslynDomUtilities.dll</HintPath>
+      <HintPath>..\..\..\packages\RoslynDom.1.0.34-alpha\lib\net45\RoslynDomUtilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.32.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

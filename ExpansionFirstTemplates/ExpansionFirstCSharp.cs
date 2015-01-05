@@ -1,4 +1,5 @@
-﻿using ExpansionFirst.Common;
+﻿using CodeFirst.Common;
+using ExpansionFirst.Common;
 using RoslynDom.CSharp;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,18 @@ namespace ExpansionFirstTemplates
 {
    public class ExpansionFirstCSharp
    {
-      public static ExpansionFirstTemplate LoadFromFile(string fileName)
+      public static ExpansionFirstTemplate<TMetadata> LoadFromFile<TMetadata>(string fileName)
+       where TMetadata : CodeFirstMetadata<TMetadata>
       {
-         var newTemplate = new ExpansionFirstTemplate( RDom.CSharp.LoadFromFile(fileName));
+         var newTemplate = new ExpansionFirstTemplate<TMetadata>(RDom.CSharp, RDom.CSharp.LoadFromFile(fileName));
          return newTemplate;
       }
 
-      public static ExpansionFirstTemplate Load(string code)
+      public static ExpansionFirstTemplate<TMetadata> Load<TMetadata>(string code)
+      where TMetadata : CodeFirstMetadata<TMetadata>
       {
-         var newTemplate = new ExpansionFirstTemplate(RDom.CSharp.Load(code));
+         var newTemplate = new ExpansionFirstTemplate<TMetadata>(RDom.CSharp, RDom.CSharp.Load(code));
          return newTemplate;
       }
-  }
+   }
 }

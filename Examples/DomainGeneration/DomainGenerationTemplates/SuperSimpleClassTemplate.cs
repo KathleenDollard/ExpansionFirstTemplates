@@ -1,4 +1,5 @@
-﻿namespace ExpansionFirstTemplatesTests.SuperSimpleClassTemplate
+﻿//[[ _xf_FilePathHint("{ExecutionPath}\..\..\..\DomainOutput\{MetadataFileName}SuperSimple.g.cs") ]]
+namespace ExpansionFirstTemplatesTests.SuperSimpleClassTemplate
 {
    #region [[ _xf_ForEach(LoopOver="Meta.Classes", VarName="Class") ]]
    namespace _xf_Class_dot_Namespace

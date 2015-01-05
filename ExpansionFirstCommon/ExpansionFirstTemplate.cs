@@ -4,6 +4,7 @@ using System.Linq;
 using RoslynDom.Common;
 using ExpansionFirst.Common;
 using ExpansionFirst;
+using CodeFirst.Common;
 
 namespace ExpansionFirst.Common
 {
@@ -14,6 +15,8 @@ namespace ExpansionFirst.Common
       private ReplacementAlteration replacementAlteration = new ReplacementAlteration();
       private MetadataContextStack contextStack = new MetadataContextStack();
       private InstructionHelper helper = new InstructionHelper();
+      private string filePathHint;
+      protected IFactoryAccess factoryAccess;
 
       /// <summary>
       /// 
@@ -29,9 +32,19 @@ namespace ExpansionFirst.Common
       /// dependency, someone needs to manage file boundaries for file based geenration and
       /// fragment based for fragment based generation. 
       /// </remarks>
-      public ExpansionFirstTemplate(IRoot templateRoot)
+      public ExpansionFirstTemplate(IFactoryAccess factoryAccess, IRoot templateRoot)
       {
+         this.factoryAccess = factoryAccess;
          this.templateRoot = templateRoot;
+         var filePathHint = templateRoot.Descendants
+                              .OfType<IPublicAnnotation>()
+                              .Where(x => x.Name == "_xf_FilePathHint")
+                              .FirstOrDefault();
+         if (filePathHint != null)
+         {
+            this.filePathHint = filePathHint.GetValue("").ToString();
+         }
+
          Initialize();
       }
 
@@ -48,9 +61,6 @@ namespace ExpansionFirst.Common
          DoRunInitialize();
       }
 
-      public void RunComplete()
-      { DoSomeInstruction((ins, cs) => ins.RunComplete(cs)); }
-
       public IEnumerable<IRoot> Run<TMetadata>(TMetadata metadata)
       {
          contextStack.Push(Constants.Metadata, metadata);
@@ -63,6 +73,15 @@ namespace ExpansionFirst.Common
          contextStack.Pop();
          return retList;
       }
+
+      public string FilePathHint
+      { get { return this.filePathHint; } }
+
+      public string Name
+      { get { return templateRoot.FilePath; } }
+
+      public void RunComplete()
+      { DoSomeInstruction((ins, cs) => ins.RunComplete(cs)); }
 
       internal IEnumerable<IDom> Update(IDom part, MetadataContextStack contextStack, ref IDom lastPart)
       {
@@ -140,90 +159,6 @@ namespace ExpansionFirst.Common
          { newPartAsContainer.AddOrMoveMember(newMember); }
       }
 
-      //public IEnumerable<IDom> InternalRun<T>(T part, MetadataContextStack contextStack, ref IDom nextPart)
-      //    where T : IDom
-      //{
-      //   var type = part.GetType();
-      //   var iDomInterface = type.GetInterfaces()
-      //                        .Where(x => x.Name == "IDom`1")
-      //                        .FirstOrDefault();
-      //   if (iDomInterface == null) throw new InvalidOperationException();
-      //   var iType = iDomInterface.GenericTypeArguments.First();
-      //   var method = ReflectionUtilities.MakeGenericMethod(this.GetType(), "InternalRunAsT", iType);
-      //   return method.Invoke(this, new object[] { part, contextStack }) as IEnumerable<IDom>;
-      //}
-
-      //public IEnumerable<IDom> InternalRunAsT<T>(T part, MetadataContextStack contextStack, ref IDom nextPart)
-      //         where T : IDom<T>
-      //{
-      //   var ret = new List<T>();
-
-      //   if (DoInstruction(part, contextStack, ret, ref nextPart)) return ret.OfType<IDom>();
-
-      //   //if (HandleBlock(part, contextStack, ret, ref nextPart)) return ret.OfType<IDom>();
-
-      //   var newItem = part.Copy();
-      //   DoReplacements(newItem, contextStack);
-
-      //   var newPartAsContainer = newItem as IContainer;
-      //   if (newPartAsContainer != null)
-      //   {
-      //      var members = newPartAsContainer.GetMembers();
-      //      var member = members.FirstOrDefault();
-      //      var i = 0;
-      //      while (member != null)
-      //      {
-      //         i++; if (i > 1000) throw new InvalidOperationException("Infinite loop detected");
-      //         var nextMember = members.FollowingSiblings(member).FirstOrDefault();
-      //         var newMembers = InternalRun(member, contextStack, ref nextMember);
-      //         newPartAsContainer.RemoveMember(member);
-      //         foreach (var newMember in newMembers)
-      //         { newPartAsContainer.AddOrMoveMember(newMember); }
-      //      }
-      //   }
-
-      //   return new IDom[] { newItem };
-      //}
-
-      //public IEnumerable<IDom> InternalRunAsT<T>(T part, MetadataContextStack contextStack)
-      //       where T : IDom<T>
-      //{
-      //   var ret = new List<T>();
-      //   var result = DoInstruction(part, contextStack);
-      //   if (result != null) return result;
-
-      //   var newItem = part.Copy();
-      //   DoReplacements(newItem, contextStack);
-
-      //   var partAsContainer = newItem as IContainer;
-      //   if (partAsContainer != null)
-      //   {
-      //      foreach (var member in partAsContainer.GetMembers())
-      //      {
-      //         var newMembers = InternalRun(member, contextStack);
-      //         partAsContainer.RemoveMember(member);
-      //         foreach (var newMember in newMembers)
-      //         { partAsContainer.AddOrMoveMember(newMember); }
-      //      }
-      //   }
-
-      //   return new IDom[] { newItem };
-      //}
-
-      //private IEnumerable<IDom> DoInstruction<T>(T part, MetadataContextStack contextStack)
-      //    where T : IDom
-      //{
-      //   var publicAnnotation = part as IPublicAnnotation;
-      //   if (publicAnnotation == null) return null;
-      //   foreach (var instruction in availableInstructions)
-      //   {
-      //      var result = instruction.DoInstruction(publicAnnotation, contextStack);
-      //      if (result != null) return result;
-      //   }
-      //   return null;
-      //}
-
-
       private bool DoInstruction(IDom part, MetadataContextStack contextStack, List<IDom> retList,
                                     ref IDom lastPart)
       {
@@ -261,6 +196,26 @@ namespace ExpansionFirst.Common
          {
             instructionPartDelegate(instruction, contextStack);
          }
+      }
+   }
+   public class ExpansionFirstTemplate<T> : ExpansionFirstTemplate, ITemplate<T>
+      where T :CodeFirstMetadata<T>
+   {
+      public ExpansionFirstTemplate(IFactoryAccess factoryAccess, IRoot templateRoot) : base(factoryAccess, templateRoot)
+      { }
+      public Type MetadataType
+      { get { return typeof(T); } }
+
+      public string GetOutput(T metadata)
+      {
+         var ret = "";
+         var roots = Run(metadata);
+         foreach (var root in roots)
+         {
+            var output= factoryAccess.GetFormattedSourceCode(root);
+            ret += output;
+         }
+         return ret;
       }
    }
 }
